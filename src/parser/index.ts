@@ -1,0 +1,1 @@
+export { parseChat } from './parser';
