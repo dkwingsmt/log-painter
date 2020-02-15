@@ -1,1 +1,1 @@
-export { parseChat } from './parser';
+export { parseChat } from './parser_chat';

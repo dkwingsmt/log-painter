@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`header1-basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "骰娘-Roll100",
+        "number": "87200175",
+      },
+      "time": "2019-09-23 8:43:38 PM",
+    },
+    Object {
+      "content": Array [
+        ".r test",
+      ],
+      "player": Object {
+        "name": "暗夜",
+        "number": "28084825",
+      },
+      "time": "2019-09-23 9:02:42 PM",
+    },
+    Object {
+      "content": Array [
+        "4",
+      ],
+      "player": Object {
+        "name": "岁寒",
+        "number": "36226407",
+      },
+      "time": "2019-09-23 11:26:00 PM",
+    },
+    Object {
+      "content": Array [
+        "5",
+      ],
+      "player": Object {
+        "name": "黄山真君",
+        "number": "106505723",
+      },
+      "time": "2019-09-24 7:54:29 AM",
+    },
+    Object {
+      "content": Array [
+        "6",
+      ],
+      "player": Object {
+        "name": "黄山真君",
+        "number": "106505723",
+      },
+      "time": "2019-09-24 9:16:35 AM",
+    },
+  ],
+}
+`;
+
+exports[`header2-basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "（1",
+      ],
+      "player": Object {
+        "name": "无情的围观熊",
+        "title": "冒泡",
+      },
+      "time": "2/14/2020 9:16:13 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "守善锤",
+        "title": "骰子",
+      },
+      "time": "2/14/2020 9:16:17 PM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "克里斯托夫·韦恩",
+        "title": "PL",
+      },
+      "time": "2/14/2020 9:17:10 PM",
+    },
+    Object {
+      "content": Array [
+        "5",
+      ],
+      "player": Object {
+        "name": "菲比斯·墨菲斯托",
+        "title": "PL",
+      },
+      "time": "2/14/2020 9:17:31 PM",
+    },
+  ],
+}
+`;
+
+exports[`header3-basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "丧 丧 熊",
+        "title": "煤油",
+      },
+      "time": "9:59:54 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "Paul~K（写不完了...）",
+        "title": "八方体",
+      },
+      "time": "10:00:04 PM",
+    },
+  ],
+}
+`;

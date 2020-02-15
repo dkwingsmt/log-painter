@@ -11,5 +11,6 @@ module.exports = {
     "array-bracket-spacing": ["error", "never"],
     "no-param-reassign": "error",
     "indent": ["error", 2, { "SwitchCase": 1 }],
+    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "_.+" }]
   },
 }
