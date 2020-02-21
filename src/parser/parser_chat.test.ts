@@ -1,4 +1,4 @@
-import { parseChat } from "parser";
+import { parseChat } from './parser_chat';
 
 it("header1-basic", () => {
   const text = `

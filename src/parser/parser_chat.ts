@@ -1,38 +1,36 @@
-import foreach from 'lodash/foreach';
 import compact from 'lodash/compact';
 import flow from 'lodash/flow';
-import { parse } from 'path';
 
-interface Player {
+export interface ParsedPlayer {
   name: string;
   number?: string;
   title?: string;
 }
 
-interface Header {
-  player: Player;
+interface ParsedHeader {
+  player: ParsedPlayer;
   time?: string;
 }
 
-interface LogLine {
+export interface ParsedLine {
   time?: string;
-  player: Player;
+  player: ParsedPlayer;
   content: string[];
 }
 
-interface ParseResult {
-  logLines: LogLine[];
+export interface ParseResult {
+  logLines: ParsedLine[];
 }
 
-type HeaderParser = (line: string) => Header | null;
-type LogLineConverter = (logLine: LogLine) => LogLine | null;
+type HeaderParser = (line: string) => ParsedHeader | null;
+type LogLineConverter = (logLine: ParsedLine) => ParsedLine | null;
 
 interface LogConfig {
   headerParser: HeaderParser;
   logLineConverter: LogLineConverter;
 }
 
-function removeSystemTextConverter(logLine: LogLine | null): LogLine | null {
+function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | null {
   if (logLine == null)
     return null;
   const lines = logLine.content;
@@ -56,7 +54,7 @@ function removeSystemTextConverter(logLine: LogLine | null): LogLine | null {
   return logLine;
 }
 
-function defaultConverter(logLine: LogLine | null): LogLine | null {
+function defaultConverter(logLine: ParsedLine | null): ParsedLine | null {
   if (logLine == null)
     return null;
   const lines = logLine.content;
@@ -74,7 +72,7 @@ function defaultConverter(logLine: LogLine | null): LogLine | null {
 // Export from log
 // E.g. "2019-09-23 8:43:38 PM 骰娘-Roll100(872001750)"
 const exportFromLog: LogConfig = {
-  headerParser: (line: string): Header | null => {
+  headerParser: (line: string): ParsedHeader | null => {
     const regHeader = /^(\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?) ([^AMP]*?)\((\d+)\)$/;
     const matches = regHeader.exec(line);
     if (!matches)
@@ -88,7 +86,7 @@ const exportFromLog: LogConfig = {
       time,
     };
   },
-  logLineConverter: (logLine: LogLine): LogLine | null => {
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
     if (['10000', '1000000'].includes(logLine.player.number || ''))
       return null;
     return defaultConverter(logLine);
@@ -98,7 +96,7 @@ const exportFromLog: LogConfig = {
 // Copy from sidewindow
 // E.g. "【冒泡】无情的围观熊 2/14/2020 9:16:13 PM"
 const copyFromSideWindow: LogConfig = {
-  headerParser: (line: string): Header | null => {
+  headerParser: (line: string): ParsedHeader | null => {
     const regHeader = /^【(.{1,6})】(.*?) (\d{1,4}\/\d{2}\/\d{1,4}\xA0\d{1,2}:\d{2}:\d{2}(?:\xA0(?:AM|PM))?)$/;
     const matches = regHeader.exec(line);
     if (!matches)
@@ -112,7 +110,7 @@ const copyFromSideWindow: LogConfig = {
       time,
     };
   },
-  logLineConverter: (logLine: LogLine): LogLine | null => {
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
     return flow(
       removeSystemTextConverter,
       defaultConverter,
@@ -123,7 +121,7 @@ const copyFromSideWindow: LogConfig = {
 // Copy from chat
 // E.g. "【煤油】丧 丧 熊 9:59:54 PM"
 const copyFromChat: LogConfig = {
-  headerParser: (line: string): Header | null => {
+  headerParser: (line: string): ParsedHeader | null => {
     const regHeader = /^【(.{1,6})】(.*)\xA0(\d{1,2}:\d{2}:\d{2}(?:\xA0(?:AM|PM)))?$/;
     const matches = regHeader.exec(line);
     if (!matches)
@@ -137,7 +135,7 @@ const copyFromChat: LogConfig = {
       time,
     };
   },
-  logLineConverter: (logLine: LogLine): LogLine | null => {
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
     return flow(
       removeSystemTextConverter,
       defaultConverter,
@@ -146,10 +144,10 @@ const copyFromChat: LogConfig = {
 };
 
 export function parseChat(data: string): ParseResult {
-  const logLines: LogLine[] = [];
+  const logLines: ParsedLine[] = [];
   let firstLogConfig: LogConfig | undefined;
   for (const line of data.split('\n')) {
-    const parsedHeader = ((): Header | null => {
+    const parsedHeader = ((): ParsedHeader | null => {
       if (firstLogConfig)
         return firstLogConfig.headerParser(line);
       for (const logConfig of [exportFromLog, copyFromSideWindow, copyFromChat]) {
@@ -168,7 +166,7 @@ export function parseChat(data: string): ParseResult {
       });
     } else {
       if (firstLogConfig) {
-        const currentLogLine: LogLine | undefined = logLines[logLines.length - 1];
+        const currentLogLine: ParsedLine | undefined = logLines[logLines.length - 1];
         // Content after a recognizable header
         if (currentLogLine)
           currentLogLine.content.push(line);

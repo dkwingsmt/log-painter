@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should work for empty config 1`] = `
+Object {
+  "lines": Array [
+    Object {
+      "content": Array [
+        "1",
+        "2",
+      ],
+      "playerId": "name:a",
+      "time": "time1",
+      "title": "A",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "playerId": "name:b",
+      "time": "time2",
+      "title": "B",
+    },
+    Object {
+      "content": Array [
+        "4",
+      ],
+      "playerId": "name:a",
+      "time": "time3",
+      "title": "A",
+    },
+  ],
+  "nextConfig": Object {
+    "players": Object {
+      "name:a": Object {
+        "color": "black",
+        "displayName": "a",
+        "enabled": true,
+        "playerId": "name:a",
+      },
+      "name:b": Object {
+        "color": "silver",
+        "displayName": "b",
+        "enabled": true,
+        "playerId": "name:b",
+      },
+    },
+  },
+  "playerIds": Array [
+    "name:a",
+    "name:b",
+  ],
+}
+`;
