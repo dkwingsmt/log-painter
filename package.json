@@ -1,6 +1,7 @@
 {
   "name": "log-painter",
   "version": "0.1.0",
+  "homepage" : "http://logpainter.tong.mu",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.2",
@@ -22,7 +23,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
@@ -43,6 +46,7 @@
     "@typescript-eslint/parser": "^2.6.0",
     "eslint": "^6.6.0",
     "eslint-plugin-react": "^7.16.0",
+    "gh-pages": "^2.2.0",
     "prettier": "^1.18.2"
   }
 }
