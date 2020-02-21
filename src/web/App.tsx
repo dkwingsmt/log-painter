@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import Store from 'store';
 
 import AppBar from '@material-ui/core/AppBar';
 import Container from '@material-ui/core/Container';
@@ -33,10 +34,11 @@ const Header: React.FC = (props: HeaderProps) => {
 const emptyConfiguration: Configuration = { players: {} };
 
 function loadConfig(): Configuration {
-  return emptyConfiguration;
+  return Store.get('config') || emptyConfiguration;
 }
 
 function saveConfig(config: Configuration): void {
+  Store.set('config', config);
 }
 
 const Main: React.FC = () => {
