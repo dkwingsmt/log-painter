@@ -147,7 +147,7 @@ const copyFromChat: LogConfig = {
 // E.g. "a dark ideation  23:50:40"
 const copyFromMobile: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(.*) (\d{1,2}:\d{2}:\d{2})$/;
+    const regHeader = /^(.*?)  (\d{1,2}:\d{2}:\d{2}) *$/;
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -171,7 +171,7 @@ export function parseChat(data: string): ParseResult {
     const parsedHeader = ((): ParsedHeader | null => {
       if (firstLogConfig)
         return firstLogConfig.headerParser(line);
-      for (const logConfig of [exportFromLog, copyFromSideWindow, copyFromChat, copyFromMobile]) {
+      for (const logConfig of [copyFromMobile, exportFromLog, copyFromSideWindow, copyFromChat]) {
         const result = logConfig.headerParser(line);
         if (result) {
           firstLogConfig = logConfig;

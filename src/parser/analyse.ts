@@ -84,7 +84,6 @@ export function analyse(parsed: ParseResult, currentConfig: Configuration): Anal
     if (!configPlayer) {
       configPlayer = {
         enabled: true,
-        playerId: player.playerId,
         displayName: player.name,
         color: findFirstUnusedPresetColor(presetColors, configPlayers),
       };

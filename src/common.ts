@@ -21,7 +21,6 @@ export interface AnalyseResult {
 }
 
 export interface ConfigPlayer {
-  playerId: string;
   displayName: string;
   enabled: boolean;
   color: string;

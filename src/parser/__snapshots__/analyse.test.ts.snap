@@ -35,13 +35,11 @@ Object {
         "color": "black",
         "displayName": "a",
         "enabled": true,
-        "playerId": "name:a",
       },
       "name:b": Object {
         "color": "silver",
         "displayName": "b",
         "enabled": true,
-        "playerId": "name:b",
       },
     },
   },
