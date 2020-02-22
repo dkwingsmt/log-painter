@@ -68,7 +68,7 @@ Object {
         "name": "无情的围观熊",
         "title": "冒泡",
       },
-      "time": "2/14/2020 9:16:13 PM",
+      "time": "2/14/2020 9:16:13 PM",
     },
     Object {
       "content": Array [
@@ -79,7 +79,7 @@ Object {
         "name": "守善锤",
         "title": "骰子",
       },
-      "time": "2/14/2020 9:16:17 PM",
+      "time": "2/14/2020 9:16:17 PM",
     },
     Object {
       "content": Array [
@@ -89,7 +89,7 @@ Object {
         "name": "克里斯托夫·韦恩",
         "title": "PL",
       },
-      "time": "2/14/2020 9:17:10 PM",
+      "time": "2/14/2020 9:17:10 PM",
     },
     Object {
       "content": Array [
@@ -99,7 +99,7 @@ Object {
         "name": "菲比斯·墨菲斯托",
         "title": "PL",
       },
-      "time": "2/14/2020 9:17:31 PM",
+      "time": "2/14/2020 9:17:31 PM",
     },
   ],
 }
@@ -116,7 +116,7 @@ Object {
         "name": "无情的围观熊",
         "title": undefined,
       },
-      "time": "2/14/2020 9:16:13 PM",
+      "time": "2/14/2020 9:16:13 PM",
     },
     Object {
       "content": Array [
@@ -127,7 +127,7 @@ Object {
         "name": "守善锤",
         "title": undefined,
       },
-      "time": "2/14/2020 9:16:17 PM",
+      "time": "2/14/2020 9:16:17 PM",
     },
     Object {
       "content": Array [
@@ -137,7 +137,7 @@ Object {
         "name": "克里斯托夫·韦恩",
         "title": undefined,
       },
-      "time": "2/14/2020 9:17:10 PM",
+      "time": "2/14/2020 9:17:10 PM",
     },
     Object {
       "content": Array [
@@ -147,7 +147,7 @@ Object {
         "name": "菲比斯·墨菲斯托",
         "title": undefined,
       },
-      "time": "2/14/2020 9:17:31 PM",
+      "time": "2/14/2020 9:17:31 PM",
     },
   ],
 }
@@ -161,10 +161,10 @@ Object {
         "1",
       ],
       "player": Object {
-        "name": "丧 丧 熊",
+        "name": "丧 丧 熊",
         "title": "煤油",
       },
-      "time": "9:59:54 PM",
+      "time": "9:59:54 PM",
     },
     Object {
       "content": Array [
@@ -175,7 +175,7 @@ Object {
         "name": "Paul~K（写不完了...）",
         "title": "八方体",
       },
-      "time": "10:00:04 PM",
+      "time": "10:00:04 PM",
     },
   ],
 }
@@ -189,10 +189,10 @@ Object {
         "1",
       ],
       "player": Object {
-        "name": "丧 丧 熊",
+        "name": "丧 丧 熊",
         "title": undefined,
       },
-      "time": "9:59:54 PM",
+      "time": "9:59:54 PM",
     },
     Object {
       "content": Array [
@@ -203,7 +203,7 @@ Object {
         "name": "Paul~K（写不完了...）",
         "title": undefined,
       },
-      "time": "10:00:04 PM",
+      "time": "10:00:04 PM",
     },
   ],
 }

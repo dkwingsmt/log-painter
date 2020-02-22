@@ -97,7 +97,7 @@ const exportFromLog: LogConfig = {
 // E.g. "【冒泡】无情的围观熊 2/14/2020 9:16:13 PM"
 const copyFromSideWindow: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(?:【(.{1,6})】)?(.*?) (\d{1,4}\/\d{2}\/\d{1,4}\xA0\d{1,2}:\d{2}:\d{2}(?:\xA0(?:AM|PM))?)$/;
+    const regHeader = /^(?:【(.{1,6})】)?(.*?) (\d{1,4}\/\d{2}\/\d{1,4} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?)$/;
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -122,7 +122,7 @@ const copyFromSideWindow: LogConfig = {
 // E.g. "【煤油】丧 丧 熊 9:59:54 PM"
 const copyFromChat: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(?:【(.{1,6})】)?(.*)\xA0(\d{1,2}:\d{2}:\d{2}(?:\xA0(?:AM|PM)))?$/;
+    const regHeader = /^(?:【(.{1,6})】)?(.*) (\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM)))?$/;
     const matches = regHeader.exec(line);
     if (!matches)
       return null;

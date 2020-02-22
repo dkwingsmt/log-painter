@@ -53,7 +53,6 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
       <Grid
         item
         xs={12}
-        style={{ maxHeight: 400, overflowY: 'scroll' }}
         className={stepperClasses.Body}
       >
         <div
