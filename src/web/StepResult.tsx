@@ -86,7 +86,7 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
               >
                 {`<${player.displayName}> `}
                 {content.map((contentLine: string, contentId: number) => {
-                  const newLine = contentId == 0 ? [] : [<br key={`br-${contentId}`}/>];
+                  const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>];
                   return newLine.concat([<span key={contentId}>{contentLine}</span>]);
                 })}
               </p>

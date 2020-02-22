@@ -6,8 +6,14 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { Configuration, AnalysedLine } from 'common';
+import { Configuration, AnalyseResult } from 'common';
 import { convert } from 'parser';
 
 import './index.css';
@@ -41,15 +47,58 @@ function saveConfig(config: Configuration): void {
   Store.set('config', config);
 }
 
-const Main: React.FC = () => {
+interface AlertDialogProps {
+  open: boolean;
+  onClose: () => void;
+  body: React.ReactNode;
+}
+
+const AlertDialog: React.FC<AlertDialogProps> = ({ open, onClose, body }: AlertDialogProps) => {
+  return (
+    <div>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle>出错啦</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {body}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color="primary" autoFocus>
+            好的
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};
+
+interface MainProps {
+  setError: (body: React.ReactNode) => void;
+}
+
+const Main: React.FC<MainProps> = ({ setError }: MainProps) => {
   const [step, setStep] = useState<number>(1);
 
   const sourceText = useRef<string>('');
   const oldConfig = useRef<Configuration>(emptyConfiguration);
+  const lastConvertResult = useRef<AnalyseResult>({ lines: [], playerIds: [], nextConfig: emptyConfiguration });
 
   function onSourceNextStep(result: StepSourceResult): void {
     sourceText.current = result.text;
     oldConfig.current = loadConfig();
+
+    const convertResult = convert(sourceText.current, oldConfig.current);
+    if (convertResult.lines.length === 0 || convertResult.playerIds.length === 0) {
+      setError('无法从这段记录中找到可识别的部分！请检查后再试一次吧！');
+      return;
+    }
+    lastConvertResult.current = convertResult;
     setStep(step+1);
   }
 
@@ -58,7 +107,6 @@ const Main: React.FC = () => {
   }
 
   const newConfig = useRef<Configuration>(emptyConfiguration);
-  const lines = useRef<AnalysedLine[]>([]);
   function onConfigNextStep(result: StepConfigResult): void {
     saveConfig(result.newConfig);
     newConfig.current = result.newConfig;
@@ -91,12 +139,10 @@ const Main: React.FC = () => {
         <StepConfig
           key={step}
           getInitState={(): StepConfigInitState => {
-            const convertResult = convert(sourceText.current, oldConfig.current);
-            lines.current = convertResult.lines;
             return {
-              lines: convertResult.lines,
-              playerIds: convertResult.playerIds,
-              config: convertResult.nextConfig,
+              lines: lastConvertResult.current.lines,
+              playerIds: lastConvertResult.current.playerIds,
+              config: lastConvertResult.current.nextConfig,
             };
           }}
           onPrevStep={onConfigPrevStep}
@@ -109,7 +155,7 @@ const Main: React.FC = () => {
           key={step}
           getInitState={(): StepResultInitState => {
             return {
-              lines: lines.current,
+              lines: lastConvertResult.current.lines,
               config: newConfig.current,
             };
           }}
@@ -126,14 +172,22 @@ const Main: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const [errorMessage, setErrorMessage] = useState<React.ReactNode | null>();
   return (
     <div className="root">
       <Header />
       <Container maxWidth='md' className='Body-container'>
         <Grid container xs={12}>
-          <Main />
+          <Main
+            setError={setErrorMessage}
+          />
         </Grid>
       </Container>
+      <AlertDialog
+        open={!!errorMessage}
+        onClose={(): void => setErrorMessage(null)}
+        body={errorMessage}
+      />
     </div>
   );
 };

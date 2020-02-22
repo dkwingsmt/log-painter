@@ -14,6 +14,12 @@ export interface AnalysedPlayer {
   name: string;
 }
 
+export interface AnalyseResult {
+  lines: AnalysedLine[];
+  playerIds: string[];
+  nextConfig: Configuration;
+}
+
 export interface ConfigPlayer {
   playerId: string;
   displayName: string;

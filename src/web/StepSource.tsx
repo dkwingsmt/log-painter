@@ -46,6 +46,7 @@ export const StepSource: React.FC<StepSourceProps> = (props: StepSourceProps) =>
         <Button
           variant="contained"
           color="primary"
+          disabled={text.length < 5}
           className={stepperClasses.ControlButton}
           onClick={(): void => {
             onNextStep({

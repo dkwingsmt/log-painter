@@ -145,7 +145,7 @@ const copyFromChat: LogConfig = {
 
 export function parseChat(data: string): ParseResult {
   const logLines: ParsedLine[] = [];
-  let firstLogConfig: LogConfig | undefined;
+  let firstLogConfig: LogConfig | undefined = undefined;
   for (const line of data.split('\n')) {
     const parsedHeader = ((): ParsedHeader | null => {
       if (firstLogConfig)

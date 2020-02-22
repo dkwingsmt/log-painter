@@ -6,6 +6,7 @@ import {
   Configuration,
   AnalysedLine,
   AnalysedPlayer,
+  AnalyseResult,
   ConfigPlayer,
   presetDescribedColors,
   DescribedColor,
@@ -15,12 +16,6 @@ interface GroupResult {
   players: AnalysedPlayer[];
   lines: AnalysedLine[];
 };
-
-export interface AnalyseResult {
-  lines: AnalysedLine[];
-  playerIds: string[];
-  nextConfig: Configuration;
-}
 
 const presetColors: string[] = presetDescribedColors.map(({ value }: DescribedColor) => value);
 
