@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ repoUrl }: HeaderProps) => {
   return (
     <AppBar position='static'>
       <Toolbar>
-        <Avatar alt="Logo" src="/logo512.png" className={classes.logo} />
+        <Avatar alt="Logo" src="/android-chrome-512x512.png" className={classes.logo} />
         <Typography variant="h6" className={classes.horizontalFill}>
           DK的跑团记录着色器
         </Typography>
