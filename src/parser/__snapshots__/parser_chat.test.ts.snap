@@ -208,3 +208,37 @@ Object {
   ],
 }
 `;
+
+exports[`header4-basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "德里奇化石 ",
+      },
+      "time": "23:50:12",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "a dark ideation ",
+      },
+      "time": "23:50:40",
+    },
+    Object {
+      "content": Array [
+        "诶？",
+      ],
+      "player": Object {
+        "name": "一零绵羊咩咩咩 ",
+      },
+      "time": "23:50:48",
+    },
+  ],
+}
+`;

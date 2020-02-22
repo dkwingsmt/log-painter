@@ -143,6 +143,27 @@ const copyFromChat: LogConfig = {
   },
 };
 
+// Copy from mobile
+// E.g. "a dark ideation  23:50:40"
+const copyFromMobile: LogConfig = {
+  headerParser: (line: string): ParsedHeader | null => {
+    const regHeader = /^(.*) (\d{1,2}:\d{2}:\d{2})$/;
+    const matches = regHeader.exec(line);
+    if (!matches)
+      return null;
+    const [_all, name, time] = matches;
+    return {
+      player: {
+        name,
+      },
+      time,
+    };
+  },
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
+    return defaultConverter(logLine);
+  },
+};
+
 export function parseChat(data: string): ParseResult {
   const logLines: ParsedLine[] = [];
   let firstLogConfig: LogConfig | undefined = undefined;
@@ -150,7 +171,7 @@ export function parseChat(data: string): ParseResult {
     const parsedHeader = ((): ParsedHeader | null => {
       if (firstLogConfig)
         return firstLogConfig.headerParser(line);
-      for (const logConfig of [exportFromLog, copyFromSideWindow, copyFromChat]) {
+      for (const logConfig of [exportFromLog, copyFromSideWindow, copyFromChat, copyFromMobile]) {
         const result = logConfig.headerParser(line);
         if (result) {
           firstLogConfig = logConfig;

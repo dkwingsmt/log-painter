@@ -138,3 +138,21 @@ Paul~K（写不完了...） 10:00:04 PM
     parseChat(text)
   ).toMatchSnapshot();
 });
+
+it("header4-basic", () => {
+  const text = `
+— —  2020-2-21  — —
+
+德里奇化石  23:50:12
+1
+
+a dark ideation  23:50:40
+2
+
+一零绵羊咩咩咩  23:50:48
+诶？
+  `;
+  expect(
+    parseChat(text)
+  ).toMatchSnapshot();
+});
