@@ -1,12 +1,19 @@
 import React, { useState, useRef } from 'react';
+import SVGInline from 'react-svg-inline';
 import Store from 'store';
 
+import GithubIcon from 'simple-icons/icons/github';
+
+import { Theme, makeStyles, createStyles, createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -22,16 +29,47 @@ import { StepSource, StepSourceResult, StepSourceInitState } from './StepSource'
 import { StepConfig, StepConfigResult, StepConfigInitState } from './StepConfig';
 import { StepResult, StepResultInitState } from './StepResult';
 
+const useHeaderStyles = makeStyles((_theme: Theme) =>
+  createStyles({
+    logo: {
+      marginRight: 15,
+      backgroundColor: 'white',
+    },
+    horizontalFill: {
+      flex: '1 0 auto',
+    },
+    toolbarIcon: {
+      height: 24,
+      width: 24,
+      fill: 'white',
+    },
+  }),
+);
+
 interface HeaderProps {
+  repoUrl: string;
 }
 
-const Header: React.FC = (props: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({ repoUrl }: HeaderProps) => {
+  const classes = useHeaderStyles();
   return (
     <AppBar position='static'>
       <Toolbar>
-        <Typography variant="h6">
-          跑团记录着色器
+        <Avatar alt="Logo" src="/logo512.png" className={classes.logo} />
+        <Typography variant="h6" className={classes.horizontalFill}>
+          DK的跑团记录着色器
         </Typography>
+        <IconButton
+          aria-label="GitHub"
+          href={repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <SVGInline
+            svg={GithubIcon.svg}
+            className={classes.toolbarIcon}
+          />
+        </IconButton>
       </Toolbar>
     </AppBar>
   );
@@ -171,24 +209,39 @@ const Main: React.FC<MainProps> = ({ setError }: MainProps) => {
   );
 };
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#795548',
+    },
+    secondary: {
+      main: '#00897b',
+    },
+  },
+});
+
 const App: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<React.ReactNode | null>();
   return (
-    <div className="root">
-      <Header />
-      <Container maxWidth='md' className='Body-container'>
-        <Grid container xs={12}>
-          <Main
-            setError={setErrorMessage}
-          />
-        </Grid>
-      </Container>
-      <AlertDialog
-        open={!!errorMessage}
-        onClose={(): void => setErrorMessage(null)}
-        body={errorMessage}
-      />
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="root">
+        <Header
+          repoUrl='https://github.com/dkwingsmt/log-painter'
+        />
+        <Container maxWidth='md' className='Body-container'>
+          <Grid container xs={12}>
+            <Main
+              setError={setErrorMessage}
+            />
+          </Grid>
+        </Container>
+        <AlertDialog
+          open={!!errorMessage}
+          onClose={(): void => setErrorMessage(null)}
+          body={errorMessage}
+        />
+      </div>
+    </ThemeProvider>
   );
 };
 

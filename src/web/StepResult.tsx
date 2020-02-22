@@ -22,7 +22,7 @@ const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
     Output: {
       fontFamily: '微软雅黑',
-      fontSize: 12,
+      fontSize: 14,
       padding: '18.5px 14px',
 
       borderColor: '#0000003b',

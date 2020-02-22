@@ -1,6 +1,6 @@
 {
-  "short_name": "跑团记录着色器",
-  "name": "跑团记录着色器",
+  "short_name": "跑团记录着色",
+  "name": "DK的跑团记录着色器",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff"
+  "theme_color": "#5d4037",
+  "background_color": "#bdbdbd"
 }

@@ -1,31 +1,20 @@
 {
   "name": "log-painter",
-  "version": "0.1.0",
-  "homepage" : "http://logpainter.tong.mu",
-  "private": true,
-  "dependencies": {
-    "@material-ui/core": "^4.9.2",
-    "@types/jest": "24.0.21",
-    "@types/lodash": "^4.14.144",
-    "@types/node": "12.12.0",
-    "@types/react": "16.9.11",
-    "@types/react-dom": "16.9.3",
-    "color": "^3.1.2",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
-    "react-scripts": "3.2.0",
-    "store": "^2.0.12",
-    "typescript": "3.6.4"
+  "version": "1.0.0",
+  "author": "DKWings",
+  "license": "MIT",
+  "homepage": "https://github.com/dkwingsmt/log-painter",
+  "bugs": {
+    "url": "https://github.com/dkwingsmt/log-painter/issues"
   },
+  "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "browserslist": {
     "production": [
@@ -39,6 +28,25 @@
       "last 1 safari version"
     ]
   },
+  "dependencies": {
+    "@material-ui/core": "^4.9.2",
+    "@types/jest": "24.0.21",
+    "@types/lodash": "^4.14.144",
+    "@types/node": "12.12.0",
+    "@types/react": "16.9.11",
+    "@types/react-dom": "16.9.3",
+    "@types/react-svg-inline": "^2.1.1",
+    "color": "^3.1.2",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-scripts": "3.2.0",
+    "react-svg-inline": "^2.1.1",
+    "simple-icons": "^2.5.0",
+    "store": "^2.0.12",
+    "typescript": "3.6.4"
+  },
   "devDependencies": {
     "@types/color": "^3.0.1",
     "@types/store": "^2.0.2",
@@ -47,6 +55,7 @@
     "eslint": "^6.6.0",
     "eslint-plugin-react": "^7.16.0",
     "gh-pages": "^2.2.0",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "source-map-explorer": "^2.3.1"
   }
 }
