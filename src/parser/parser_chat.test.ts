@@ -71,6 +71,34 @@ it("header2-basic", () => {
   ).toMatchSnapshot();
 });
 
+it("header2-without title", () => {
+  const text = `
+无情的围观熊 2/14/2020 9:16:13 PM
+（1
+
+守善锤 2/14/2020 9:16:17 PM
+2
+3
+
+你和abc有12个共同好友，点击添加好友。
+
+克里斯托夫·韦恩 2/14/2020 9:17:10 PM
+3
+
+你撤回了一条消息
+
+克里斯托夫·韦恩 2/14/2020 9:17:22 PM
+
+守善锤撤回了一条消息
+
+菲比斯·墨菲斯托 2/14/2020 9:17:31 PM
+5
+  `;
+  expect(
+    parseChat(text)
+  ).toMatchSnapshot();
+});
+
 it("header3-basic", () => {
   const text = `
 【煤油】丧 丧 熊 9:59:54 PM
@@ -83,6 +111,26 @@ it("header3-basic", () => {
 你和abc有12个共同好友，点击添加好友。
 
 【八方体】Paul~K（写不完了...） 10:00:04 PM
+2
+3
+  `;
+  expect(
+    parseChat(text)
+  ).toMatchSnapshot();
+});
+
+it("header3-without title", () => {
+  const text = `
+丧 丧 熊 9:59:54 PM
+1
+
+丧 丧 熊 9:59:54 PM
+
+守善锤撤回了一条消息
+
+你和abc有12个共同好友，点击添加好友。
+
+Paul~K（写不完了...） 10:00:04 PM
 2
 3
   `;
