@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
 import { useStepperStyles } from './App-classes';
-import { AnalysedLine, Configuration } from 'common';
+import { AnalysedLine, Configuration, getGeneralConfig, GeneralConfig } from 'common';
 
 export interface StepResultInitState {
   lines: AnalysedLine[];
@@ -42,12 +42,30 @@ const useStyles = makeStyles((_theme: Theme) =>
   }),
 );
 
+const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): AnalysedLine[] => {
+  let resultLines: AnalysedLine[] = lines;
+  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithBracket')) {
+    resultLines = resultLines.filter((line: AnalysedLine) => {
+      return !['（', '('].includes(line.content[0][0]);
+    });
+  }
+  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithDot')) {
+    resultLines = resultLines.filter((line: AnalysedLine) => {
+      return !['。', '.'].includes(line.content[0][0]);
+    });
+  }
+  return resultLines;
+};
+
 export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) => {
   const { getInitState, onPrevStep, onRestart } = props;
   const { lines, config } = getInitState();
   const stepperClasses = useStepperStyles();
   const classes = useStyles();
-  const { players } = config;
+  const playersConfig = config.players || {};
+
+  const processedLines = processLines(lines, config.general || {});
+
   return (
     <Grid container className={stepperClasses.Container}>
       <Grid
@@ -71,9 +89,9 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
           }}
           id='result'
         >
-          {lines.map((line: AnalysedLine, paragraphId: number) => {
+          {processedLines.map((line: AnalysedLine, paragraphId: number) => {
             const { playerId, content } = line;
-            const player = players[playerId];
+            const player = playersConfig[playerId];
             if (!player.enabled)
               return null;
             return (

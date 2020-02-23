@@ -124,14 +124,14 @@ const Main: React.FC<MainProps> = ({ setError }: MainProps) => {
   const [step, setStep] = useState<number>(1);
 
   const sourceText = useRef<string>('');
-  const oldConfig = useRef<Configuration>(emptyConfiguration);
+  const config = useRef<Configuration>(emptyConfiguration);
   const lastConvertResult = useRef<AnalyseResult>({ lines: [], playerIds: [], nextConfig: emptyConfiguration });
 
   function onSourceNextStep(result: StepSourceResult): void {
     sourceText.current = result.text;
-    oldConfig.current = loadConfig();
+    config.current = loadConfig();
 
-    const convertResult = convert(sourceText.current, oldConfig.current);
+    const convertResult = convert(sourceText.current, config.current);
     if (convertResult.lines.length === 0 || convertResult.playerIds.length === 0) {
       setError('无法从这段记录中找到可识别的部分！请检查后再试一次吧！');
       return;
@@ -144,15 +144,13 @@ const Main: React.FC<MainProps> = ({ setError }: MainProps) => {
     setStep(step-1);
   }
 
-  const newConfig = useRef<Configuration>(emptyConfiguration);
   function onConfigNextStep(result: StepConfigResult): void {
     saveConfig(result.newConfig);
-    newConfig.current = result.newConfig;
+    config.current = result.newConfig;
     setStep(step+1);
   }
 
   function onResultPrevStep(): void {
-    saveConfig(oldConfig.current);
     setStep(step-1);
   }
 
@@ -194,7 +192,7 @@ const Main: React.FC<MainProps> = ({ setError }: MainProps) => {
           getInitState={(): StepResultInitState => {
             return {
               lines: lastConvertResult.current.lines,
-              config: newConfig.current,
+              config: config.current,
             };
           }}
           onPrevStep={onResultPrevStep}

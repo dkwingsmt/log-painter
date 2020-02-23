@@ -78,7 +78,7 @@ function findFirstUnusedPresetColor(
 
 export function analyse(parsed: ParseResult, currentConfig: Configuration): AnalyseResult {
   const { lines, players } = groupByPlayers(parsed);
-  const configPlayers: Record<string, ConfigPlayer> = clone(currentConfig.players);
+  const configPlayers: Record<string, ConfigPlayer> = clone(currentConfig.players || {});
   for (const player of players) {
     let configPlayer = findFirstPlayerConfig(configPlayers, player.allPlayerIds);
     if (!configPlayer) {
@@ -96,6 +96,7 @@ export function analyse(parsed: ParseResult, currentConfig: Configuration): Anal
     lines,
     playerIds: players.map((player: AnalysedPlayer) => player.playerId),
     nextConfig: {
+      ...currentConfig,
       players: configPlayers,
     },
   };

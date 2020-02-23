@@ -26,8 +26,23 @@ export interface ConfigPlayer {
   color: string;
 }
 
+export interface GeneralConfig {
+  removeLinesStartedWithBracket?: boolean;
+  removeLinesStartedWithDot?: boolean;
+}
+
+export const defaultGeneralConfig: Required<GeneralConfig> = {
+  removeLinesStartedWithBracket: false,
+  removeLinesStartedWithDot: false,
+};
+
+export const getGeneralConfig = <K extends keyof GeneralConfig>(config: GeneralConfig, key: K): GeneralConfig[K] => {
+  return config[key] || defaultGeneralConfig[key];
+};
+
 export interface Configuration {
-  players: Record<string, ConfigPlayer>;
+  players?: Record<string, ConfigPlayer>;
+  general?: GeneralConfig;
 }
 
 export interface DescribedColor {

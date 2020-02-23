@@ -1,17 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Color from 'color';
 
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Switch from '@material-ui/core/Switch';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import FormGroup from '@material-ui/core/FormGroup';
 
 import { useStepperStyles } from './App-classes';
-import { Configuration, AnalysedLine, DescribedColor, ConfigPlayer, presetDescribedColors } from 'common';
+import { getGeneralConfig, Configuration, AnalysedLine, DescribedColor, ConfigPlayer, presetDescribedColors, GeneralConfig } from 'common';
 
 export interface StepConfigInitState {
   lines: AnalysedLine[];
@@ -32,7 +33,7 @@ interface PlayerConfigProps {
   setEnabled: (value: boolean) => void;
 }
 
-const useStyles = makeStyles((_theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     PlayerConfig: {
     },
@@ -157,18 +158,66 @@ const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPl
   );
 };
 
+interface StepConfigGeneralProps {
+  value: GeneralConfig;
+  setValue: (value: GeneralConfig) => void;
+}
+
+const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGeneralProps) => {
+  const { value, setValue } = props;
+
+  return (
+    <FormGroup>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={getGeneralConfig(value, 'removeLinesStartedWithBracket')}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+              setValue({
+                ...value,
+                removeLinesStartedWithBracket: event.target.checked,
+              });
+            }}
+            color="primary"
+          />
+        }
+        label="去掉以（开头的行"
+      />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={getGeneralConfig(value, 'removeLinesStartedWithDot')}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+              setValue({
+                ...value,
+                removeLinesStartedWithDot: event.target.checked,
+              });
+            }}
+            color="primary"
+          />
+        }
+        label="去掉以。开头的行"
+      />
+    </FormGroup>
+  );
+};
+
 export const StepConfig: React.FC<SourceInputProps> = (props: SourceInputProps) => {
   const { getInitState, onPrevStep, onNextStep } = props;
-  const { lines: initLines, config, playerIds } = getInitState();
+  const { config, playerIds } = getInitState();
   const stepperClasses = useStepperStyles();
-  const lines = useRef<AnalysedLine[]>(initLines);
-  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(config.players);
+  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(config.players || {});
+  const [generalConfig, setGeneralConfig] = useState<GeneralConfig>(config.general || {});
   function setPlayer(id: string, value: ConfigPlayer): void {
     setPlayers({ ...players, [id]: value });
   }
   return (
     <Grid container className={stepperClasses.Container}>
       <Grid item xs={12} className={stepperClasses.Body}>
+        <StepConfigGeneral
+          value={generalConfig}
+          setValue={setGeneralConfig}
+        />
         <StepConfigPlayers
           playerIds={playerIds}
           players={players}
@@ -189,9 +238,14 @@ export const StepConfig: React.FC<SourceInputProps> = (props: SourceInputProps) 
           color="primary"
           className={stepperClasses.ControlButton}
           onClick={(): void => {
+            console.log({
+              players,
+              general: generalConfig,
+            });
             onNextStep({
               newConfig: {
                 players,
+                general: generalConfig,
               },
             });
           }}
