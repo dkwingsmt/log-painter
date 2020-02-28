@@ -181,6 +181,34 @@ Object {
 }
 `;
 
+exports[`header3-instant withdraw 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "丧 丧 熊",
+        "title": undefined,
+      },
+      "time": "9:59:54 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "Paul~K（写不完了...）",
+        "title": undefined,
+      },
+      "time": "10:00:04 PM",
+    },
+  ],
+}
+`;
+
 exports[`header3-without title 1`] = `
 Object {
   "logLines": Array [

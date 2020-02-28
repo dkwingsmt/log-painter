@@ -36,7 +36,7 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
   const lines = logLine.content;
   const linesToRemove: number[] = [];
   for (let i = 0; i < lines.length - 2; i++) {
-    const withdrawParser = /^.*撤回了一条消息$/;
+    const withdrawParser = /^.*撤回了一条消息( 重新编辑)?$/;
     const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;
     if (lines[i] === '' && (
       lines[i+1].match(withdrawParser) ||

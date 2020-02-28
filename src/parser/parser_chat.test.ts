@@ -139,6 +139,22 @@ Paul~K（写不完了...） 10:00:04 PM
   ).toMatchSnapshot();
 });
 
+it("header3-instant withdraw", () => {
+  const text = `
+丧 丧 熊 9:59:54 PM
+1
+
+你撤回了一条消息 重新编辑
+
+Paul~K（写不完了...） 10:00:04 PM
+2
+3
+  `;
+  expect(
+    parseChat(text)
+  ).toMatchSnapshot();
+});
+
 it("header4-basic", () => {
   const text = `
 — —  2020-2-21  — —
