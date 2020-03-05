@@ -1,4 +1,5 @@
 import compact from 'lodash/compact';
+import trim from 'lodash/trim';
 import flow from 'lodash/flow';
 
 export interface ParsedPlayer {
@@ -73,7 +74,9 @@ function defaultConverter(logLine: ParsedLine | null): ParsedLine | null {
 // E.g. "2019-09-23 8:43:38 PM 骰娘-Roll100(872001750)"
 const exportFromLog: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?) ([^AMP]*?)\((\d+)\)$/;
+    const regDateName = /(\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?) (.*?)/;
+    const regNumber = /(\(\d+\)|<.+@.+\..+>)/;
+    const regHeader = new RegExp(`^${regDateName.source}${regNumber.source}$`);
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -81,7 +84,7 @@ const exportFromLog: LogConfig = {
     return {
       player: {
         name,
-        number,
+        number: trim(number, '()<>'),
       },
       time,
     };
@@ -97,7 +100,7 @@ const exportFromLog: LogConfig = {
 // E.g. "【冒泡】无情的围观熊 2/14/2020 9:16:13 PM"
 const copyFromSideWindow: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(?:【(.{1,6})】)?(.*?) (\d{1,4}\/\d{2}\/\d{1,4} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?)$/;
+    const regHeader = /^(?:【(.{1,6})】)?(.*?) (\d{1,4}\/\d{1,2}\/\d{1,4} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?)$/;
     const matches = regHeader.exec(line);
     if (!matches)
       return null;

@@ -43,6 +43,23 @@ it("header1-basic", () => {
   ).toMatchSnapshot();
 });
 
+it("header1-email", () => {
+  const text = `
+2020-03-04 12:12:29 AM 礼(852649)
+1
+
+2020-03-04 12:12:39 AM kp(100550)
+2
+
+2020-03-04 12:13:41 AM 围观<indo@qq.com>
+3
+  `;
+  expect(
+    parseChat(text)
+  ).toMatchSnapshot();
+});
+
+
 it("header2-basic", () => {
   const text = `
 【冒泡】无情的围观熊 2/14/2020 9:16:13 PM
@@ -98,6 +115,23 @@ it("header2-without title", () => {
     parseChat(text)
   ).toMatchSnapshot();
 });
+
+it("header2-single date", () => {
+  const text = `
+【骰子】守善锤 3/4/2020 6:00:32 PM
+1
+
+【嘟嘟男爵】克里斯托夫·韦恩 3/4/2020 6:00:37 PM
+2
+
+【PL】薇薇安·汉密尔顿 3/4/2020 6:01:02 PM
+3
+  `;
+  expect(
+    parseChat(text)
+  ).toMatchSnapshot();
+});
+
 
 it("header3-basic", () => {
   const text = `

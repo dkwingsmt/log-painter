@@ -57,6 +57,43 @@ Object {
 }
 `;
 
+exports[`header1-email 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "礼",
+        "number": "852649",
+      },
+      "time": "2020-03-04 12:12:29 AM",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "kp",
+        "number": "100550",
+      },
+      "time": "2020-03-04 12:12:39 AM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "围观",
+        "number": "indo@qq.com",
+      },
+      "time": "2020-03-04 12:13:41 AM",
+    },
+  ],
+}
+`;
+
 exports[`header2-basic 1`] = `
 Object {
   "logLines": Array [
@@ -100,6 +137,43 @@ Object {
         "title": "PL",
       },
       "time": "2/14/2020 9:17:31 PM",
+    },
+  ],
+}
+`;
+
+exports[`header2-single date 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "守善锤",
+        "title": "骰子",
+      },
+      "time": "3/4/2020 6:00:32 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "克里斯托夫·韦恩",
+        "title": "嘟嘟男爵",
+      },
+      "time": "3/4/2020 6:00:37 PM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "薇薇安·汉密尔顿",
+        "title": "PL",
+      },
+      "time": "3/4/2020 6:01:02 PM",
     },
   ],
 }

@@ -1,4 +1,4 @@
-import { analyse, AnalyseResult } from './analyse';
+import { analyse } from './analyse';
 import { ParseResult, ParsedPlayer } from './parser_chat';
 import { Configuration } from 'common';
 
