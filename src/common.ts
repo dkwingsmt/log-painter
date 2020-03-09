@@ -1,5 +1,10 @@
 import Color from 'color';
 
+export interface GroupResult {
+  players: AnalysedPlayer[];
+  lines: AnalysedLine[];
+};
+
 export interface AnalysedLine {
   playerId: string;
   time?: string;

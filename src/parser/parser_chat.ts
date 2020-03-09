@@ -8,11 +8,6 @@ export interface ParsedPlayer {
   title?: string;
 }
 
-interface ParsedHeader {
-  player: ParsedPlayer;
-  time?: string;
-}
-
 export interface ParsedLine {
   time?: string;
   player: ParsedPlayer;
@@ -21,6 +16,11 @@ export interface ParsedLine {
 
 export interface ParseResult {
   logLines: ParsedLine[];
+}
+
+interface ParsedHeader {
+  player: ParsedPlayer;
+  time?: string;
 }
 
 type HeaderParser = (line: string) => ParsedHeader | null;

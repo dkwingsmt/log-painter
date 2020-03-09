@@ -1,8 +1,9 @@
-import { analyse } from './analyse';
 import { parseChat, ParseResult } from './parser_chat';
-import { Configuration, AnalyseResult } from 'common';
+import { GroupResult } from 'common';
+import { groupByPlayers } from './group';
 
-export function convert(source: string, currentConfig: Configuration): AnalyseResult {
+export function parseAndGroup(source: string): GroupResult {
   const parseResult: ParseResult = parseChat(source);
-  return analyse(parseResult, currentConfig);
+  return groupByPlayers(parseResult);
 }
+export { analyse } from './analyse';

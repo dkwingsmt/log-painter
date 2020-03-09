@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Color from 'color';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
@@ -21,6 +21,7 @@ export interface StepConfigInitState {
 }
 
 export interface StepConfigResult {
+  lines: AnalysedLine[];
   newConfig: Configuration;
 }
 
@@ -110,9 +111,10 @@ const PlayerConfig: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => 
 };
 
 interface SourceInputProps {
-  getInitState: () => StepConfigInitState;
+  initState: StepConfigInitState;
   onPrevStep: () => void;
   onNextStep: (result: StepConfigResult) => void;
+  show: boolean;
 }
 
 interface StepConfigPlayersProps {
@@ -203,14 +205,23 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
 };
 
 export const StepConfig: React.FC<SourceInputProps> = (props: SourceInputProps) => {
-  const { getInitState, onPrevStep, onNextStep } = props;
-  const { config, playerIds } = getInitState();
+  const { initState, onPrevStep, onNextStep } = props;
   const stepperClasses = useStepperStyles();
-  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(config.players || {});
-  const [generalConfig, setGeneralConfig] = useState<GeneralConfig>(config.general || {});
+  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
+    () => initState.config.players || {},
+  );
+  const playerIds = useRef<string[]>(initState.playerIds);
+  const [generalConfig, setGeneralConfig] = useState<GeneralConfig>(
+    () => initState.config.general || {},
+  );
+  const lines = useRef<AnalysedLine[]>(initState.lines);
   function setPlayer(id: string, value: ConfigPlayer): void {
     setPlayers({ ...players, [id]: value });
   }
+
+  if (!props.show)
+    return null;
+
   return (
     <Grid container className={stepperClasses.Container}>
       <Grid item xs={12} className={stepperClasses.Body}>
@@ -219,7 +230,7 @@ export const StepConfig: React.FC<SourceInputProps> = (props: SourceInputProps) 
           setValue={setGeneralConfig}
         />
         <StepConfigPlayers
-          playerIds={playerIds}
+          playerIds={playerIds.current}
           players={players}
           setPlayer={setPlayer}
         />
@@ -238,11 +249,8 @@ export const StepConfig: React.FC<SourceInputProps> = (props: SourceInputProps) 
           color="primary"
           className={stepperClasses.ControlButton}
           onClick={(): void => {
-            console.log({
-              players,
-              general: generalConfig,
-            });
             onNextStep({
+              lines: lines.current,
               newConfig: {
                 players,
                 general: generalConfig,

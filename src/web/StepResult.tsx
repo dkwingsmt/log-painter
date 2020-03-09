@@ -1,24 +1,27 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
 import { useStepperStyles } from './App-classes';
-import { AnalysedLine, Configuration, getGeneralConfig, GeneralConfig } from 'common';
+import { AnalysedLine, Configuration, getGeneralConfig, GeneralConfig, ConfigPlayer } from 'common';
+import { saveConfig } from './storage';
 
 export interface StepResultInitState {
   lines: AnalysedLine[];
   config: Configuration;
+  oldConfig: Configuration;
 }
 
 interface StepResultProps {
-  getInitState: () => StepResultInitState;
+  initState: StepResultInitState;
   onPrevStep: () => void;
   onRestart: () => void;
+  show: boolean;
 }
 
-const useStyles = makeStyles((_theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     Output: {
       fontFamily: '微软雅黑',
@@ -58,13 +61,17 @@ const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): Anal
 };
 
 export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) => {
-  const { getInitState, onPrevStep, onRestart } = props;
-  const { lines, config } = getInitState();
+  const { initState, onPrevStep, onRestart } = props;
   const stepperClasses = useStepperStyles();
   const classes = useStyles();
-  const playersConfig = config.players || {};
+  const oldConfig = useRef<Configuration>(initState.oldConfig);
+  const playersConfig = useRef<Record<string, ConfigPlayer>>(initState.config.players || {});
+  const [processedLines] = useState<AnalysedLine[]>(() => {
+    return processLines(initState.lines, initState.config.general || {});
+  });
 
-  const processedLines = processLines(lines, config.general || {});
+  if (!props.show)
+    return null;
 
   return (
     <Grid container className={stepperClasses.Container}>
@@ -91,7 +98,7 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
         >
           {processedLines.map((line: AnalysedLine, paragraphId: number) => {
             const { playerId, content } = line;
-            const player = playersConfig[playerId];
+            const player = playersConfig.current[playerId];
             if (!player.enabled)
               return null;
             return (
@@ -116,7 +123,10 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
           variant="outlined"
           color="secondary"
           className={stepperClasses.ControlButton}
-          onClick={onPrevStep}
+          onClick={(): void => {
+            saveConfig(oldConfig.current);
+            onPrevStep();
+          }}
         >
           上一步
         </Button>
