@@ -52,7 +52,7 @@ const MultiStep = <I1, O1, I2, O2, I3>(
       {initStates[0] == null ? null : (
         <Step1
           key={`${session}-1`}
-          show={initStates.length == 1}
+          show={initStates.length === 1}
           initState={initStates[0]}
           onNextStep={(result: O1): void => {
             setInitStates([
@@ -66,7 +66,7 @@ const MultiStep = <I1, O1, I2, O2, I3>(
       {initStates[1] == null ? null : (
         <Step2
           key={`${session}-2`}
-          show={initStates.length == 2}
+          show={initStates.length === 2}
           initState={initStates[1]}
           onPrevStep={(): void => {
             setInitStates([
@@ -86,7 +86,7 @@ const MultiStep = <I1, O1, I2, O2, I3>(
       {initStates[2] == null ? null : (
         <Step3
           key={`${session}-3`}
-          show={initStates.length == 3}
+          show={initStates.length === 3}
           initState={initStates[2]}
           onPrevStep={(): void => {
             setInitStates([

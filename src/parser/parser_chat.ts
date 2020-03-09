@@ -150,7 +150,7 @@ const copyFromChat: LogConfig = {
 // E.g. "a dark ideation  23:50:40"
 const copyFromMobile: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(.*?)  (\d{1,2}:\d{2}:\d{2}) *$/;
+    const regHeader = /^(.*?) {2}(\d{1,2}:\d{2}:\d{2}) *$/;
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
