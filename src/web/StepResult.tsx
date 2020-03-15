@@ -1,8 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import ClipboardJS from 'clipboard';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import { useStepperStyles } from './App-classes';
 import { AnalysedLine, Configuration, getGeneralConfig, GeneralConfig, ConfigPlayer } from 'common';
@@ -26,7 +30,7 @@ const useStyles = makeStyles(() =>
     Output: {
       fontFamily: '微软雅黑',
       fontSize: 14,
-      padding: '18.5px 14px',
+      padding: '16px 14px',
 
       borderColor: '#0000003b',
       '&:hover': {
@@ -60,6 +64,11 @@ const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): Anal
   return resultLines;
 };
 
+interface SnackbarControl {
+  body?: React.ReactNode;
+  open: boolean;
+}
+
 export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) => {
   const { initState, onPrevStep, onRestart } = props;
   const stepperClasses = useStepperStyles();
@@ -68,6 +77,39 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
   const playersConfig = useRef<Record<string, ConfigPlayer>>(initState.config.players || {});
   const [processedLines] = useState<AnalysedLine[]>(() => {
     return processLines(initState.lines, initState.config.general || {});
+  });
+  const [snackbarControl, setSnackbarControl] = useState<SnackbarControl>({
+    open: false,
+  });
+  console.log(snackbarControl);
+  const alertOnSnackbar = (body: React.ReactNode): void => {
+    setSnackbarControl({ body, open: true });
+  };
+  const [clipboard] = useState<ClipboardJS>((): ClipboardJS => {
+    const result: ClipboardJS = new ClipboardJS('#clipboard-button', {
+      target: (): Element => {
+        const element: Element | null = document.getElementById('result-body');
+        if (element == null) {
+          alertOnSnackbar('复制错误：找不到复制对象');
+          throw new Error('找不到复制对象');
+        }
+        return element;
+      },
+    });
+    result.on('success', () => {
+      setImmediate(() => alertOnSnackbar('已复制到剪贴板！'));
+    });
+    result.on('error', (e: ClipboardJS.Event) => {
+      alertOnSnackbar('复制错误！请双击文本框手动复制吧！');
+      console.error(e);
+    });
+    return result;
+  });
+
+  useEffect(() => {
+    return (): void => {
+      clipboard.destroy();
+    };
   });
 
   if (!props.show)
@@ -86,7 +128,7 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
             const selection = window.getSelection();
             if (!selection)
               return;
-            const element = document.getElementById('result');
+            const element = document.getElementById('result-body');
             if (!element)
               return;
             const range = document.createRange();
@@ -94,8 +136,17 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
             selection.removeAllRanges();
             selection.addRange(range);
           }}
-          id='result'
+          id='result-body'
         >
+          <IconButton
+            style={{
+              float: 'right',
+              marginTop: -15,
+            }}
+            id='clipboard-button'
+          >
+            <FileCopyIcon />
+          </IconButton>
           {processedLines.map((line: AnalysedLine, paragraphId: number) => {
             const { playerId, content } = line;
             const player = playersConfig.current[playerId];
@@ -139,6 +190,22 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
           再做一团
         </Button>
       </Grid>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={snackbarControl.open}
+        autoHideDuration={6000}
+        onClose={(): void => {
+          console.trace();
+          setSnackbarControl({
+            ...snackbarControl,
+            open: false,
+          });
+        }}
+        message={snackbarControl.body}
+      />
     </Grid>
   );
 };
