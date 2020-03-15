@@ -142,6 +142,43 @@ Object {
 }
 `;
 
+exports[`header2-other system messages 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "守善锤",
+        "title": "骰子",
+      },
+      "time": "3/4/2020 6:00:32 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "克里斯托夫·韦恩",
+        "title": "嘟嘟男爵",
+      },
+      "time": "3/4/2020 6:00:37 PM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "薇薇安·汉密尔顿",
+        "title": "PL",
+      },
+      "time": "3/4/2020 6:01:02 PM",
+    },
+  ],
+}
+`;
+
 exports[`header2-single date 1`] = `
 Object {
   "logLines": Array [

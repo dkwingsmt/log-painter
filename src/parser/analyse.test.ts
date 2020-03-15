@@ -1,38 +1,46 @@
 import { analyse } from './analyse';
-import { ParseResult, ParsedPlayer } from './parser_chat';
-import { Configuration } from 'common';
+import { Configuration, GroupResult, AnalysedPlayer, AnalyseResult } from 'common';
 
 it('should work for empty config', () => {
-  const player1: ParsedPlayer = {
+  const player1: AnalysedPlayer = {
+    playerId: 'name:a',
+    allPlayerIds: ['name:a'],
     name: 'a',
-    title: 'A',
   };
-  const player2: ParsedPlayer = {
+  const player2: AnalysedPlayer = {
+    playerId: 'name:b',
+    allPlayerIds: ['name:b'],
     name: 'b',
-    title: 'B',
   };
-  const parseResult: ParseResult = {
-    logLines: [
+  const groupResult: GroupResult = {
+    players: [
+      player1,
+      player2,
+    ],
+    lines: [
       {
         time: 'time1',
-        player: player1,
+        playerId: player1.playerId,
         content: ['1', '2'],
+        title: 'A',
       },
       {
         time: 'time2',
-        player: player2,
+        playerId: player2.playerId,
         content: ['3'],
+        title: 'B',
       },
       {
         time: 'time3',
-        player: player1,
+        playerId: player1.playerId,
         content: ['4'],
+        title: 'A',
       },
     ]
   };
   const oldConfig: Configuration = {
     players: {},
   };
-  const analyseResult: AnalyseResult = analyse(parseResult, oldConfig);
+  const analyseResult: AnalyseResult = analyse(groupResult, oldConfig);
   expect(analyseResult).toMatchSnapshot();
 });

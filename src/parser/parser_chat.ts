@@ -39,9 +39,13 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
   for (let i = 0; i < lines.length - 2; i++) {
     const withdrawParser = /^.*撤回了一条消息( 重新编辑)?$/;
     const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;
+    const joinMemberParser = /^.*加入本群。$/;
+    const inviteMemberParser = /^.*邀请.*加入了本群。$/;
     if (lines[i] === '' && (
       lines[i+1].match(withdrawParser) ||
-      lines[i+1].match(commonFriendsParser)
+      lines[i+1].match(commonFriendsParser) ||
+      lines[i+1].match(joinMemberParser) ||
+      lines[i+1].match(inviteMemberParser)
     )) {
       linesToRemove.push(i);
       linesToRemove.push(i+1);

@@ -1,6 +1,6 @@
 import values from 'lodash/values';
 
-import { ParseResult, ParsedPlayer } from './parser_chat';
+import { parseChat, ParseResult, ParsedPlayer } from './parser_chat';
 import {
   GroupResult,
   AnalysedLine,
@@ -15,7 +15,7 @@ function getPlayerIdGroup(player: ParsedPlayer): string[] {
   return ids;
 }
 
-export function groupByPlayers(result: ParseResult): GroupResult {
+function groupByPlayers(result: ParseResult): GroupResult {
   const lines: AnalysedLine[] = [];
   const players: Record<string, AnalysedPlayer> = {};
   for (const parsedLine of result.logLines) {
@@ -40,4 +40,9 @@ export function groupByPlayers(result: ParseResult): GroupResult {
     lines,
     players: values(players),
   };
+}
+
+export function parseAndGroup(source: string): GroupResult {
+  const parseResult: ParseResult = parseChat(source);
+  return groupByPlayers(parseResult);
 }

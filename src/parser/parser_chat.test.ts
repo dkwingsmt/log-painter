@@ -132,6 +132,25 @@ it("header2-single date", () => {
   ).toMatchSnapshot();
 });
 
+it("header2-other system messages", () => {
+  const text = `
+【骰子】守善锤 3/4/2020 6:00:32 PM
+1
+
+守善锤邀请123加入了本群。
+
+猪突猛进加入本群。
+
+【嘟嘟男爵】克里斯托夫·韦恩 3/4/2020 6:00:37 PM
+2
+
+【PL】薇薇安·汉密尔顿 3/4/2020 6:01:02 PM
+3
+  `;
+  expect(
+    parseChat(text)
+  ).toMatchSnapshot();
+});
 
 it("header3-basic", () => {
   const text = `
