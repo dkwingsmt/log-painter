@@ -74,13 +74,16 @@ function defaultConverter(logLine: ParsedLine | null): ParsedLine | null {
   return logLine;
 }
 
+const regNumber = /\(\d+\)|<.+@.+\..+>/;
+const regTitle = /(?:【(.{1,6})】)?/;
+const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))/;
+
 // Export from log
 // E.g. "2019-09-23 8:43:38 PM 骰娘-Roll100(872001750)"
 const exportFromLog: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regDateName = /(\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?) (.*?)/;
-    const regNumber = /(\(\d+\)|<.+@.+\..+>)/;
-    const regHeader = new RegExp(`^${regDateName.source}${regNumber.source}$`);
+    const regDateName = new RegExp(`\\d{4}-\\d{2}-\\d{2} ${regTime.source}`);
+    const regHeader = new RegExp(`^(${regDateName.source}) (.*)(${regNumber.source})$`);
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -104,7 +107,8 @@ const exportFromLog: LogConfig = {
 // E.g. "【冒泡】无情的围观熊 2/14/2020 9:16:13 PM"
 const copyFromSideWindow: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(?:【(.{1,6})】)?(.*?) (\d{1,4}\/\d{1,2}\/\d{1,4} \d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?)$/;
+    const regDateTime = new RegExp(`\\d{1,4}\\/\\d{1,2}\\/\\d{1,4} ${regTime.source}`);
+    const regHeader = new RegExp(`^${regTitle.source}(.*?) (${regDateTime.source})$`);
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -129,7 +133,7 @@ const copyFromSideWindow: LogConfig = {
 // E.g. "【煤油】丧 丧 熊 9:59:54 PM"
 const copyFromChat: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = /^(?:【(.{1,6})】)?(.*) (\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM)))?$/;
+    const regHeader = new RegExp(`^${regTitle.source}(.*) (${regTime.source})$`);
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -149,6 +153,33 @@ const copyFromChat: LogConfig = {
     )(logLine);
   },
 };
+
+// Copy from message manager
+// E.g. "织练取(958884) 3:13:28 AM"
+// const copyFromMessageManager: LogConfig = {
+//   headerParser: (line: string): ParsedHeader | null => {
+//     const regName = /^(.*) (\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM)))?/;
+//     const regTime = /^(.*) (\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM)))?/;
+//     const regHeader = new RegExp(`^${regTitle.source}${regBody.source}$`);
+//     const matches = regHeader.exec(line);
+//     if (!matches)
+//       return null;
+//     const [_all, title, name, time] = matches;
+//     return {
+//       player: {
+//         name,
+//         title,
+//       },
+//       time,
+//     };
+//   },
+//   logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
+//     return flow(
+//       removeSystemTextConverter,
+//       defaultConverter,
+//     )(logLine);
+//   },
+// };
 
 // Copy from mobile
 // E.g. "a dark ideation  23:50:40"
