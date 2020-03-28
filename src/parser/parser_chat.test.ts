@@ -1,7 +1,8 @@
 import { parseChat } from './parser_chat';
 
-it("header1-basic", () => {
-  const text = `
+describe('exported from log', () => {
+  it("basic", () => {
+    const text = `
 消息记录（此消息记录为文本格式，不支持重新导入）
 
 ================================================================
@@ -37,14 +38,14 @@ it("header1-basic", () => {
 
 2019-09-24 9:16:35 AM 黄山真君(106505723)
 6
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
-});
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 
-it("header1-email", () => {
-  const text = `
+  it("email", () => {
+    const text = `
 2020-03-04 12:12:29 AM 礼(852649)
 1
 
@@ -53,15 +54,16 @@ it("header1-email", () => {
 
 2020-03-04 12:13:41 AM 围观<indo@qq.com>
 3
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });
 
-
-it("header2-basic", () => {
-  const text = `
+describe('copied from sidewindow', () => {
+  it("basic", () => {
+    const text = `
 【冒泡】无情的围观熊 2/14/2020 9:16:13 PM
 （1
 
@@ -82,14 +84,14 @@ it("header2-basic", () => {
 
 【PL】菲比斯·墨菲斯托 2/14/2020 9:17:31 PM
 5
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
-});
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 
-it("header2-without title", () => {
-  const text = `
+  it("without title", () => {
+    const text = `
 无情的围观熊 2/14/2020 9:16:13 PM
 （1
 
@@ -110,14 +112,14 @@ it("header2-without title", () => {
 
 菲比斯·墨菲斯托 2/14/2020 9:17:31 PM
 5
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
-});
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 
-it("header2-single date", () => {
-  const text = `
+  it("single date", () => {
+    const text = `
 【骰子】守善锤 3/4/2020 6:00:32 PM
 1
 
@@ -126,14 +128,14 @@ it("header2-single date", () => {
 
 【PL】薇薇安·汉密尔顿 3/4/2020 6:01:02 PM
 3
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
-});
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 
-it("header2-other system messages", () => {
-  const text = `
+  it("other system messages", () => {
+    const text = `
 【骰子】守善锤 3/4/2020 6:00:32 PM
 1
 
@@ -146,14 +148,16 @@ it("header2-other system messages", () => {
 
 【PL】薇薇安·汉密尔顿 3/4/2020 6:01:02 PM
 3
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });
 
-it("header3-basic", () => {
-  const text = `
+describe('copied from chat', () => {
+  it("basic", () => {
+    const text = `
 【煤油】丧 丧 熊 9:59:54 PM
 1
 
@@ -166,14 +170,14 @@ it("header3-basic", () => {
 【八方体】Paul~K（写不完了...） 10:00:04 PM
 2
 3
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
-});
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 
-it("header3-without title", () => {
-  const text = `
+  it("without title", () => {
+    const text = `
 丧 丧 熊 9:59:54 PM
 1
 
@@ -186,14 +190,14 @@ it("header3-without title", () => {
 Paul~K（写不完了...） 10:00:04 PM
 2
 3
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
-});
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 
-it("header3-instant withdraw", () => {
-  const text = `
+  it("instant withdraw", () => {
+    const text = `
 丧 丧 熊 9:59:54 PM
 1
 
@@ -202,14 +206,50 @@ it("header3-instant withdraw", () => {
 Paul~K（写不完了...） 10:00:04 PM
 2
 3
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });
 
-it("header4-basic", () => {
-  const text = `
+xdescribe('copied from message manager', () => {
+  it("basic", () => {
+    const text = `
+【1】织练取(958884) 3:13:28 AM
+“——1。
+【2】白菜<indo@qq.com> 3:14:30 AM
+“我2”
+"门3"
+【2】白菜<indo@qq.com> 3:16:49 AM
+嫌疑
+是出
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+
+  it("without title", () => {
+    const text = `
+织练取(958884) 3:13:28 AM
+“——1。
+白菜<indo@qq.com> 3:14:30 AM
+“我2”
+"门3"
+白菜<indo@qq.com> 3:16:49 AM
+嫌疑
+是出
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+});
+
+describe('copied from mobile', () => {
+  it("basic", () => {
+    const text = `
 — —  2020-2-21  — —
 
 德里奇化石  23:50:12${" "}
@@ -220,8 +260,9 @@ a dark ideation  23:50:40${" "}
 
 一零绵羊咩咩咩  23:50:48${" "}
 诶？
-  `;
-  expect(
-    parseChat(text)
-  ).toMatchSnapshot();
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });

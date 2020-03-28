@@ -1,6 +1,294 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`header1-basic 1`] = `
+exports[`copied from chat basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "丧 丧 熊",
+        "title": "煤油",
+      },
+      "time": "9:59:54 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "Paul~K（写不完了...）",
+        "title": "八方体",
+      },
+      "time": "10:00:04 PM",
+    },
+  ],
+}
+`;
+
+exports[`copied from chat instant withdraw 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "丧 丧 熊",
+        "title": undefined,
+      },
+      "time": "9:59:54 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "Paul~K（写不完了...）",
+        "title": undefined,
+      },
+      "time": "10:00:04 PM",
+    },
+  ],
+}
+`;
+
+exports[`copied from chat without title 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "丧 丧 熊",
+        "title": undefined,
+      },
+      "time": "9:59:54 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "Paul~K（写不完了...）",
+        "title": undefined,
+      },
+      "time": "10:00:04 PM",
+    },
+  ],
+}
+`;
+
+exports[`copied from mobile basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "德里奇化石",
+      },
+      "time": "23:50:12",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "a dark ideation",
+      },
+      "time": "23:50:40",
+    },
+    Object {
+      "content": Array [
+        "诶？",
+      ],
+      "player": Object {
+        "name": "一零绵羊咩咩咩",
+      },
+      "time": "23:50:48",
+    },
+  ],
+}
+`;
+
+exports[`copied from sidewindow basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "（1",
+      ],
+      "player": Object {
+        "name": "无情的围观熊",
+        "title": "冒泡",
+      },
+      "time": "2/14/2020 9:16:13 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "守善锤",
+        "title": "骰子",
+      },
+      "time": "2/14/2020 9:16:17 PM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "克里斯托夫·韦恩",
+        "title": "PL",
+      },
+      "time": "2/14/2020 9:17:10 PM",
+    },
+    Object {
+      "content": Array [
+        "5",
+      ],
+      "player": Object {
+        "name": "菲比斯·墨菲斯托",
+        "title": "PL",
+      },
+      "time": "2/14/2020 9:17:31 PM",
+    },
+  ],
+}
+`;
+
+exports[`copied from sidewindow other system messages 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "守善锤",
+        "title": "骰子",
+      },
+      "time": "3/4/2020 6:00:32 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "克里斯托夫·韦恩",
+        "title": "嘟嘟男爵",
+      },
+      "time": "3/4/2020 6:00:37 PM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "薇薇安·汉密尔顿",
+        "title": "PL",
+      },
+      "time": "3/4/2020 6:01:02 PM",
+    },
+  ],
+}
+`;
+
+exports[`copied from sidewindow single date 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "守善锤",
+        "title": "骰子",
+      },
+      "time": "3/4/2020 6:00:32 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "克里斯托夫·韦恩",
+        "title": "嘟嘟男爵",
+      },
+      "time": "3/4/2020 6:00:37 PM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "薇薇安·汉密尔顿",
+        "title": "PL",
+      },
+      "time": "3/4/2020 6:01:02 PM",
+    },
+  ],
+}
+`;
+
+exports[`copied from sidewindow without title 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "（1",
+      ],
+      "player": Object {
+        "name": "无情的围观熊",
+        "title": undefined,
+      },
+      "time": "2/14/2020 9:16:13 PM",
+    },
+    Object {
+      "content": Array [
+        "2",
+        "3",
+      ],
+      "player": Object {
+        "name": "守善锤",
+        "title": undefined,
+      },
+      "time": "2/14/2020 9:16:17 PM",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "克里斯托夫·韦恩",
+        "title": undefined,
+      },
+      "time": "2/14/2020 9:17:10 PM",
+    },
+    Object {
+      "content": Array [
+        "5",
+      ],
+      "player": Object {
+        "name": "菲比斯·墨菲斯托",
+        "title": undefined,
+      },
+      "time": "2/14/2020 9:17:31 PM",
+    },
+  ],
+}
+`;
+
+exports[`exported from log basic 1`] = `
 Object {
   "logLines": Array [
     Object {
@@ -57,7 +345,7 @@ Object {
 }
 `;
 
-exports[`header1-email 1`] = `
+exports[`exported from log email 1`] = `
 Object {
   "logLines": Array [
     Object {
@@ -89,294 +377,6 @@ Object {
         "number": "indo@qq.com",
       },
       "time": "2020-03-04 12:13:41 AM",
-    },
-  ],
-}
-`;
-
-exports[`header2-basic 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "（1",
-      ],
-      "player": Object {
-        "name": "无情的围观熊",
-        "title": "冒泡",
-      },
-      "time": "2/14/2020 9:16:13 PM",
-    },
-    Object {
-      "content": Array [
-        "2",
-        "3",
-      ],
-      "player": Object {
-        "name": "守善锤",
-        "title": "骰子",
-      },
-      "time": "2/14/2020 9:16:17 PM",
-    },
-    Object {
-      "content": Array [
-        "3",
-      ],
-      "player": Object {
-        "name": "克里斯托夫·韦恩",
-        "title": "PL",
-      },
-      "time": "2/14/2020 9:17:10 PM",
-    },
-    Object {
-      "content": Array [
-        "5",
-      ],
-      "player": Object {
-        "name": "菲比斯·墨菲斯托",
-        "title": "PL",
-      },
-      "time": "2/14/2020 9:17:31 PM",
-    },
-  ],
-}
-`;
-
-exports[`header2-other system messages 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "1",
-      ],
-      "player": Object {
-        "name": "守善锤",
-        "title": "骰子",
-      },
-      "time": "3/4/2020 6:00:32 PM",
-    },
-    Object {
-      "content": Array [
-        "2",
-      ],
-      "player": Object {
-        "name": "克里斯托夫·韦恩",
-        "title": "嘟嘟男爵",
-      },
-      "time": "3/4/2020 6:00:37 PM",
-    },
-    Object {
-      "content": Array [
-        "3",
-      ],
-      "player": Object {
-        "name": "薇薇安·汉密尔顿",
-        "title": "PL",
-      },
-      "time": "3/4/2020 6:01:02 PM",
-    },
-  ],
-}
-`;
-
-exports[`header2-single date 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "1",
-      ],
-      "player": Object {
-        "name": "守善锤",
-        "title": "骰子",
-      },
-      "time": "3/4/2020 6:00:32 PM",
-    },
-    Object {
-      "content": Array [
-        "2",
-      ],
-      "player": Object {
-        "name": "克里斯托夫·韦恩",
-        "title": "嘟嘟男爵",
-      },
-      "time": "3/4/2020 6:00:37 PM",
-    },
-    Object {
-      "content": Array [
-        "3",
-      ],
-      "player": Object {
-        "name": "薇薇安·汉密尔顿",
-        "title": "PL",
-      },
-      "time": "3/4/2020 6:01:02 PM",
-    },
-  ],
-}
-`;
-
-exports[`header2-without title 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "（1",
-      ],
-      "player": Object {
-        "name": "无情的围观熊",
-        "title": undefined,
-      },
-      "time": "2/14/2020 9:16:13 PM",
-    },
-    Object {
-      "content": Array [
-        "2",
-        "3",
-      ],
-      "player": Object {
-        "name": "守善锤",
-        "title": undefined,
-      },
-      "time": "2/14/2020 9:16:17 PM",
-    },
-    Object {
-      "content": Array [
-        "3",
-      ],
-      "player": Object {
-        "name": "克里斯托夫·韦恩",
-        "title": undefined,
-      },
-      "time": "2/14/2020 9:17:10 PM",
-    },
-    Object {
-      "content": Array [
-        "5",
-      ],
-      "player": Object {
-        "name": "菲比斯·墨菲斯托",
-        "title": undefined,
-      },
-      "time": "2/14/2020 9:17:31 PM",
-    },
-  ],
-}
-`;
-
-exports[`header3-basic 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "1",
-      ],
-      "player": Object {
-        "name": "丧 丧 熊",
-        "title": "煤油",
-      },
-      "time": "9:59:54 PM",
-    },
-    Object {
-      "content": Array [
-        "2",
-        "3",
-      ],
-      "player": Object {
-        "name": "Paul~K（写不完了...）",
-        "title": "八方体",
-      },
-      "time": "10:00:04 PM",
-    },
-  ],
-}
-`;
-
-exports[`header3-instant withdraw 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "1",
-      ],
-      "player": Object {
-        "name": "丧 丧 熊",
-        "title": undefined,
-      },
-      "time": "9:59:54 PM",
-    },
-    Object {
-      "content": Array [
-        "2",
-        "3",
-      ],
-      "player": Object {
-        "name": "Paul~K（写不完了...）",
-        "title": undefined,
-      },
-      "time": "10:00:04 PM",
-    },
-  ],
-}
-`;
-
-exports[`header3-without title 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "1",
-      ],
-      "player": Object {
-        "name": "丧 丧 熊",
-        "title": undefined,
-      },
-      "time": "9:59:54 PM",
-    },
-    Object {
-      "content": Array [
-        "2",
-        "3",
-      ],
-      "player": Object {
-        "name": "Paul~K（写不完了...）",
-        "title": undefined,
-      },
-      "time": "10:00:04 PM",
-    },
-  ],
-}
-`;
-
-exports[`header4-basic 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "1",
-      ],
-      "player": Object {
-        "name": "德里奇化石",
-      },
-      "time": "23:50:12",
-    },
-    Object {
-      "content": Array [
-        "2",
-      ],
-      "player": Object {
-        "name": "a dark ideation",
-      },
-      "time": "23:50:40",
-    },
-    Object {
-      "content": Array [
-        "诶？",
-      ],
-      "player": Object {
-        "name": "一零绵羊咩咩咩",
-      },
-      "time": "23:50:48",
     },
   ],
 }
