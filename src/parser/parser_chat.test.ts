@@ -213,7 +213,7 @@ Paul~K（写不完了...） 10:00:04 PM
   });
 });
 
-xdescribe('copied from message manager', () => {
+describe('copied from message manager', () => {
   it("basic", () => {
     const text = `
 【1】织练取(958884) 3:13:28 AM

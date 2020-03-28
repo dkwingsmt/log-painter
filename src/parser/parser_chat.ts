@@ -63,6 +63,7 @@ function defaultConverter(logLine: ParsedLine | null): ParsedLine | null {
   if (logLine == null)
     return null;
   const lines = logLine.content;
+  // Remove starting and trailing empty lines.
   while(lines.length > 0 && lines[0].trim() === '') {
     lines.splice(0, 1);
   }
@@ -78,6 +79,10 @@ const regNumber = /\(\d+\)|<.+@.+\..+>/;
 const regTitle = /(?:【(.{1,6})】)?/;
 const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))/;
 
+function trimNumber(src: string): string {
+  return trim(src, '()<>');
+}
+
 // Export from log
 // E.g. "2019-09-23 8:43:38 PM 骰娘-Roll100(872001750)"
 const exportFromLog: LogConfig = {
@@ -91,7 +96,7 @@ const exportFromLog: LogConfig = {
     return {
       player: {
         name,
-        number: trim(number, '()<>'),
+        number: trimNumber(number),
       },
       time,
     };
@@ -156,30 +161,28 @@ const copyFromChat: LogConfig = {
 
 // Copy from message manager
 // E.g. "织练取(958884) 3:13:28 AM"
-// const copyFromMessageManager: LogConfig = {
-//   headerParser: (line: string): ParsedHeader | null => {
-//     const regName = /^(.*) (\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM)))?/;
-//     const regTime = /^(.*) (\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM)))?/;
-//     const regHeader = new RegExp(`^${regTitle.source}${regBody.source}$`);
-//     const matches = regHeader.exec(line);
-//     if (!matches)
-//       return null;
-//     const [_all, title, name, time] = matches;
-//     return {
-//       player: {
-//         name,
-//         title,
-//       },
-//       time,
-//     };
-//   },
-//   logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
-//     return flow(
-//       removeSystemTextConverter,
-//       defaultConverter,
-//     )(logLine);
-//   },
-// };
+const copyFromMessageManager: LogConfig = {
+  headerParser: (line: string): ParsedHeader | null => {
+    const regHeader = new RegExp(`^${regTitle.source}(.*?)(${regNumber.source}) (${regTime.source})$`);
+    const matches = regHeader.exec(line);
+    if (!matches)
+      return null;
+    const [_all, title, name, number, time] = matches;
+    return {
+      player: {
+        name,
+        title,
+        number: trimNumber(number),
+      },
+      time,
+    };
+  },
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
+    return flow(
+      defaultConverter,
+    )(logLine);
+  },
+};
 
 // Copy from mobile
 // E.g. "a dark ideation  23:50:40"
@@ -209,7 +212,13 @@ export function parseChat(data: string): ParseResult {
     const parsedHeader = ((): ParsedHeader | null => {
       if (firstLogConfig)
         return firstLogConfig.headerParser(line);
-      for (const logConfig of [copyFromMobile, exportFromLog, copyFromSideWindow, copyFromChat]) {
+      for (const logConfig of [
+        copyFromMessageManager,
+        copyFromMobile,
+        exportFromLog,
+        copyFromSideWindow,
+        copyFromChat,
+      ]) {
         const result = logConfig.headerParser(line);
         if (result) {
           firstLogConfig = logConfig;
