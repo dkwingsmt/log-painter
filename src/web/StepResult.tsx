@@ -51,7 +51,7 @@ const useStyles = makeStyles(() =>
 
 const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): AnalysedLine[] => {
   let resultLines: AnalysedLine[] = lines;
-  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithBracket')) {
+  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithParenthesis')) {
     resultLines = resultLines.filter((line: AnalysedLine) => {
       return !['（', '('].includes(line.content[0][0]);
     });
@@ -59,6 +59,11 @@ const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): Anal
   if (getGeneralConfig(generalConfig, 'removeLinesStartedWithDot')) {
     resultLines = resultLines.filter((line: AnalysedLine) => {
       return !['。', '.'].includes(line.content[0][0]);
+    });
+  }
+  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithLenticular')) {
+    resultLines = resultLines.filter((line: AnalysedLine) => {
+      return !['【'].includes(line.content[0][0]);
     });
   }
   return resultLines;

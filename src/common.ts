@@ -32,13 +32,15 @@ export interface ConfigPlayer {
 }
 
 export interface GeneralConfig {
-  removeLinesStartedWithBracket?: boolean;
+  removeLinesStartedWithParenthesis?: boolean;
   removeLinesStartedWithDot?: boolean;
+  removeLinesStartedWithLenticular?: boolean;
 }
 
 export const defaultGeneralConfig: Required<GeneralConfig> = {
-  removeLinesStartedWithBracket: false,
+  removeLinesStartedWithParenthesis: false,
   removeLinesStartedWithDot: false,
+  removeLinesStartedWithLenticular: false,
 };
 
 export const getGeneralConfig = <K extends keyof GeneralConfig>(config: GeneralConfig, key: K): GeneralConfig[K] => {

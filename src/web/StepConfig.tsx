@@ -173,17 +173,17 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <FormControlLabel
         control={
           <Switch
-            checked={getGeneralConfig(value, 'removeLinesStartedWithBracket')}
+            checked={getGeneralConfig(value, 'removeLinesStartedWithParenthesis')}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
-                removeLinesStartedWithBracket: event.target.checked,
+                removeLinesStartedWithParenthesis: event.target.checked,
               });
             }}
             color="primary"
           />
         }
-        label="去掉以（开头的行"
+        label="去掉以(（开头的行"
       />
       <FormControlLabel
         control={
@@ -198,7 +198,22 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
             color="primary"
           />
         }
-        label="去掉以。开头的行"
+        label="去掉以.。开头的行"
+      />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={getGeneralConfig(value, 'removeLinesStartedWithLenticular')}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+              setValue({
+                ...value,
+                removeLinesStartedWithLenticular: event.target.checked,
+              });
+            }}
+            color="primary"
+          />
+        }
+        label="去掉以【开头的行"
       />
     </FormGroup>
   );
