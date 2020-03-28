@@ -245,6 +245,22 @@ describe('copied from message manager', () => {
       parseChat(text)
     ).toMatchSnapshot();
   });
+
+
+  it("system messages", () => {
+    const text = `
+骰娘(87200) 4:11:31 PM
+暗夜桑的h检定，那么结果是:D100=13/25 成功
+ 2020-02-27
+8:35:36 PM你撤回了一条消息
+ 2020-03-03
+DK(2808) 12:11:41 AM
+.r4h
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });
 
 describe('copied from mobile', () => {

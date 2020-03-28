@@ -35,27 +35,67 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
   if (logLine == null)
     return null;
   const lines = logLine.content;
-  const linesToRemove: number[] = [];
-  for (let i = 0; i < lines.length - 2; i++) {
-    const withdrawParser = /^.*撤回了一条消息( 重新编辑)?$/;
-    const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;
-    const joinMemberParser = /^.*加入本群。$/;
-    const inviteMemberParser = /^.*邀请.*加入了本群。$/;
-    if (lines[i] === '' && (
-      lines[i+1].match(withdrawParser) ||
-      lines[i+1].match(commonFriendsParser) ||
-      lines[i+1].match(joinMemberParser) ||
-      lines[i+1].match(inviteMemberParser)
-    )) {
-      linesToRemove.push(i);
-      linesToRemove.push(i+1);
-      i++;
+  let lastEffectiveLine = lines.length - 1;
+
+  const withdrawParser = /^.*撤回了一条消息( 重新编辑)?$/;
+  const withdrawMemberParser = /^.*撤回了成员.*的一条消息$/;
+  const withdrawMember2Parser = /^.*撤回了一条成员消息$/;
+  const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;
+  const joinMemberParser = /^.*加入本群。$/;
+  const inviteMemberParser = /^.*邀请.*加入了本群。$/;
+
+  while(true) {
+    if ([
+      /^ *$/,
+      withdrawParser,
+      withdrawMemberParser,
+      withdrawMember2Parser,
+      commonFriendsParser,
+      joinMemberParser,
+      inviteMemberParser,
+    ].some((toMatch: RegExp) => toMatch.exec(lines[lastEffectiveLine]))) {
+      lastEffectiveLine -= 1;
+    } else {
+      break;
     }
   }
-  linesToRemove.reverse();
-  for (const i of linesToRemove) {
-    lines.splice(i, 1);
+  logLine.content = logLine.content.slice(0, lastEffectiveLine + 1);
+  return logLine;
+}
+
+const regNumber = /\(\d+\)|<.+@.+\..+>/;
+const regTitle = /(?:【(.{1,6})】)?/;
+const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))/;
+
+function removeMessageManagerSystemTextConverter(logLine: ParsedLine | null): ParsedLine | null {
+  if (logLine == null)
+    return null;
+  const lines = logLine.content;
+  let lastEffectiveLine = lines.length - 1;
+
+  const dateParser = /^ \d{4}-\d{2}-\d{2}$/;
+  const withdrawParser = new RegExp(`^${regTime.source}.*撤回了一条消息$`);
+  const withdrawMemberParser = new RegExp(`^${regTime.source}.*撤回了成员.*的一条消息$`);
+  const withdrawMember2Parser = new RegExp(`^${regTime.source}.*撤回了一条成员消息$`);
+  // const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;
+  const joinMemberParser = new RegExp(`^${regTime.source}.*加入本群。$`);
+  // const inviteMemberParser = /^.*邀请.*加入了本群。$/;
+
+  while(true) {
+    if ([
+      /^ *$/,
+      dateParser,
+      withdrawParser,
+      withdrawMemberParser,
+      withdrawMember2Parser,
+      joinMemberParser,
+    ].some((toMatch: RegExp) => toMatch.exec(lines[lastEffectiveLine]))) {
+      lastEffectiveLine -= 1;
+    } else {
+      break;
+    }
   }
+  logLine.content = logLine.content.slice(0, lastEffectiveLine + 1);
   return logLine;
 }
 
@@ -74,10 +114,6 @@ function defaultConverter(logLine: ParsedLine | null): ParsedLine | null {
     return null;
   return logLine;
 }
-
-const regNumber = /\(\d+\)|<.+@.+\..+>/;
-const regTitle = /(?:【(.{1,6})】)?/;
-const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))/;
 
 function trimNumber(src: string): string {
   return trim(src, '()<>');
@@ -179,6 +215,7 @@ const copyFromMessageManager: LogConfig = {
   },
   logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
     return flow(
+      removeMessageManagerSystemTextConverter,
       defaultConverter,
     )(logLine);
   },

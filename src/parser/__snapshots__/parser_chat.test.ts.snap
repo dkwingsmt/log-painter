@@ -126,6 +126,35 @@ Object {
 }
 `;
 
+exports[`copied from message manager system messages 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "暗夜桑的h检定，那么结果是:D100=13/25 成功",
+      ],
+      "player": Object {
+        "name": "骰娘",
+        "number": "87200",
+        "title": undefined,
+      },
+      "time": "4:11:31 PM",
+    },
+    Object {
+      "content": Array [
+        ".r4h",
+      ],
+      "player": Object {
+        "name": "DK",
+        "number": "2808",
+        "title": undefined,
+      },
+      "time": "12:11:41 AM",
+    },
+  ],
+}
+`;
+
 exports[`copied from message manager without title 1`] = `
 Object {
   "logLines": Array [
