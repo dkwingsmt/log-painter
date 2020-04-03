@@ -279,6 +279,23 @@ Object {
 }
 `;
 
+exports[`copied from sidewindow date format without AM|PM 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "伤情",
+      ],
+      "player": Object {
+        "name": "迈克尔 史密斯",
+        "title": "酒店管理层",
+      },
+      "time": "2020/3/28 19:02:31",
+    },
+  ],
+}
+`;
+
 exports[`copied from sidewindow other system messages 1`] = `
 Object {
   "logLines": Array [

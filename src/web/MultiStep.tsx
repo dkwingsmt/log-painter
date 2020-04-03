@@ -43,7 +43,7 @@ const MultiStep = <I1, O1, I2, O2, I3>(
     ]);
   };
 
-  if (initStates.length == 0) {
+  if (initStates.length === 0) {
     handleRestart();
   }
 

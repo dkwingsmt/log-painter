@@ -35,7 +35,6 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
   if (logLine == null)
     return null;
   const lines = logLine.content;
-  let lastEffectiveLine = lines.length - 1;
 
   const withdrawParser = /^.*撤回了一条消息( 重新编辑)?$/;
   const withdrawMemberParser = /^.*撤回了成员.*的一条消息$/;
@@ -44,7 +43,8 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
   const joinMemberParser = /^.*加入本群。$/;
   const inviteMemberParser = /^.*邀请.*加入了本群。$/;
 
-  while(true) {
+  let end = lines.length - 1;
+  for (; end >=0; end--) {
     if ([
       /^ *$/,
       withdrawParser,
@@ -53,25 +53,23 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
       commonFriendsParser,
       joinMemberParser,
       inviteMemberParser,
-    ].some((toMatch: RegExp) => toMatch.exec(lines[lastEffectiveLine]))) {
-      lastEffectiveLine -= 1;
-    } else {
-      break;
+    ].some((toMatch: RegExp) => toMatch.exec(lines[end]))) {
+      continue;
     }
+    break;
   }
-  logLine.content = logLine.content.slice(0, lastEffectiveLine + 1);
+  logLine.content = logLine.content.slice(0, end + 1);
   return logLine;
 }
 
 const regNumber = /\(\d+\)|<.+@.+\..+>/;
 const regTitle = /(?:【(.{1,6})】)?/;
-const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))/;
+const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?/;
 
 function removeMessageManagerSystemTextConverter(logLine: ParsedLine | null): ParsedLine | null {
   if (logLine == null)
     return null;
   const lines = logLine.content;
-  let lastEffectiveLine = lines.length - 1;
 
   const dateParser = /^ \d{4}-\d{2}-\d{2}$/;
   const withdrawParser = new RegExp(`^${regTime.source}.*撤回了一条消息$`);
@@ -81,7 +79,8 @@ function removeMessageManagerSystemTextConverter(logLine: ParsedLine | null): Pa
   const joinMemberParser = new RegExp(`^${regTime.source}.*加入本群。$`);
   // const inviteMemberParser = /^.*邀请.*加入了本群。$/;
 
-  while(true) {
+  let end = lines.length - 1;
+  for (; end >=0; end--) {
     if ([
       /^ *$/,
       dateParser,
@@ -89,13 +88,12 @@ function removeMessageManagerSystemTextConverter(logLine: ParsedLine | null): Pa
       withdrawMemberParser,
       withdrawMember2Parser,
       joinMemberParser,
-    ].some((toMatch: RegExp) => toMatch.exec(lines[lastEffectiveLine]))) {
-      lastEffectiveLine -= 1;
-    } else {
-      break;
+    ].some((toMatch: RegExp) => toMatch.exec(lines[end]))) {
+      continue;
     }
+    break;
   }
-  logLine.content = logLine.content.slice(0, lastEffectiveLine + 1);
+  logLine.content = logLine.content.slice(0, end + 1);
   return logLine;
 }
 

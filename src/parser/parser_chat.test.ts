@@ -153,6 +153,16 @@ describe('copied from sidewindow', () => {
       parseChat(text)
     ).toMatchSnapshot();
   });
+
+  it("date format without AM|PM", () => {
+    const text = `
+【酒店管理层】迈克尔 史密斯 2020/3/28 19:02:31
+伤情
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });
 
 describe('copied from chat', () => {
