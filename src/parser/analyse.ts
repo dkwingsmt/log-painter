@@ -25,29 +25,30 @@ function findFirstPlayerConfig(
 
 function findFirstUnusedPresetColor(
   presetColors: string[],
-  configPlayers: Record<string, ConfigPlayer>,
+  currentPlayers: Record<string, ConfigPlayer>,
 ): string {
   const existingColors: Record<string, boolean> = {};
-  forEach(configPlayers, (configPlayer: ConfigPlayer) => {
-    existingColors[configPlayer.color] = true;
+  forEach(currentPlayers, (player: ConfigPlayer) => {
+    existingColors[player.color] = true;
   });
   return presetColors.find((color: string) => !existingColors[color]) || 'black';
 }
 
 export function analyse(grouped: GroupResult, currentConfig: Configuration): AnalyseResult {
   const { players, lines } = grouped;
-  const configPlayers: Record<string, ConfigPlayer> = clone(currentConfig.players || {});
+  const configPlayers: Record<string, ConfigPlayer> = currentConfig.players || {};
+  const currentPlayers: Record<string, ConfigPlayer> = {};
   for (const player of players) {
     let configPlayer = findFirstPlayerConfig(configPlayers, player.allPlayerIds);
     if (!configPlayer) {
       configPlayer = {
         enabled: true,
         displayName: player.name,
-        color: findFirstUnusedPresetColor(presetColors, configPlayers),
+        color: findFirstUnusedPresetColor(presetColors, currentPlayers),
       };
     }
     for (const playerId of player.allPlayerIds) {
-      configPlayers[playerId] = configPlayer;
+      currentPlayers[playerId] = configPlayer;
     }
   };
   return {
@@ -55,7 +56,10 @@ export function analyse(grouped: GroupResult, currentConfig: Configuration): Ana
     playerIds: players.map((player: AnalysedPlayer) => player.playerId),
     nextConfig: {
       ...currentConfig,
-      players: configPlayers,
+      players: {
+        ...configPlayers,
+        ...currentPlayers,
+      }
     },
   };
 }

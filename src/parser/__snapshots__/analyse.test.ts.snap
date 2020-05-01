@@ -49,3 +49,50 @@ Object {
   ],
 }
 `;
+
+exports[`should work when some players have filled starting colors 1`] = `
+Object {
+  "lines": Array [
+    Object {
+      "content": Array [
+        "1",
+        "2",
+      ],
+      "playerId": "name:a",
+      "time": "time1",
+      "title": "A",
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "playerId": "name:b",
+      "time": "time2",
+      "title": "B",
+    },
+  ],
+  "nextConfig": Object {
+    "players": Object {
+      "name:a": Object {
+        "color": "black",
+        "displayName": "A",
+        "enabled": true,
+      },
+      "name:b": Object {
+        "color": "silver",
+        "displayName": "b",
+        "enabled": true,
+      },
+      "name:d": Object {
+        "color": "silver",
+        "displayName": "D",
+        "enabled": true,
+      },
+    },
+  },
+  "playerIds": Array [
+    "name:a",
+    "name:b",
+  ],
+}
+`;
