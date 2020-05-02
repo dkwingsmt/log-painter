@@ -231,6 +231,31 @@ Object {
 }
 `;
 
+exports[`copied from mobile filter dates 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "德里奇化石",
+      },
+      "time": "23:50:12",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "a dark ideation",
+      },
+      "time": "23:50:40",
+    },
+  ],
+}
+`;
+
 exports[`copied from sidewindow basic 1`] = `
 Object {
   "logLines": Array [

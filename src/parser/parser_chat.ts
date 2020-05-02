@@ -66,6 +66,27 @@ const regNumber = /\(\d+\)|<.+@.+\..+>/;
 const regTitle = /(?:【(.{1,6})】)?/;
 const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?/;
 
+function removeMobileDateConverter(logLine: ParsedLine | null): ParsedLine | null {
+  if (logLine == null)
+    return null;
+  const lines = logLine.content;
+
+  const dateParser = /^— —  \d{4}-\d{1,2}-\d{1,2}  — —$/;
+
+  let end = lines.length - 1;
+  for (; end >=0; end--) {
+    if ([
+      /^ *$/,
+      dateParser,
+    ].some((toMatch: RegExp) => toMatch.exec(lines[end]))) {
+      continue;
+    }
+    break;
+  }
+  logLine.content = logLine.content.slice(0, end + 1);
+  return logLine;
+}
+
 function removeMessageManagerSystemTextConverter(logLine: ParsedLine | null): ParsedLine | null {
   if (logLine == null)
     return null;
@@ -236,7 +257,10 @@ const copyFromMobile: LogConfig = {
     };
   },
   logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
-    return defaultConverter(logLine);
+    return flow(
+      removeMobileDateConverter,
+      defaultConverter,
+    )(logLine);
   },
 };
 

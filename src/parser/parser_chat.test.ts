@@ -291,4 +291,21 @@ a dark ideation  23:50:40${" "}
       parseChat(text)
     ).toMatchSnapshot();
   });
+
+  it("filter dates", () => {
+    const text = `
+— —  2020-2-21  — —
+
+德里奇化石  23:50:12${" "}
+1
+
+— —  2020-2-22  — —
+
+a dark ideation  23:50:40${" "}
+2
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });
