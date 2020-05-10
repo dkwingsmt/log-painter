@@ -163,37 +163,13 @@ const exportFromLog: LogConfig = {
   },
 };
 
-// Copy from sidewindow
+// Copy from chat mainwindow or sidewindow
 // E.g. "【冒泡】无情的围观熊 2/14/2020 9:16:13 PM"
-const copyFromSideWindow: LogConfig = {
-  headerParser: (line: string): ParsedHeader | null => {
-    const regDateTime = new RegExp(`\\d{1,4}\\/\\d{1,2}\\/\\d{1,4} ${regTime.source}`);
-    const regHeader = new RegExp(`^${regTitle.source}(.*?) (${regDateTime.source})$`);
-    const matches = regHeader.exec(line);
-    if (!matches)
-      return null;
-    const [_all, title, name, time] = matches;
-    return {
-      player: {
-        name,
-        title,
-      },
-      time,
-    };
-  },
-  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
-    return flow(
-      removeSystemTextConverter,
-      defaultConverter,
-    )(logLine);
-  },
-};
-
-// Copy from chat
 // E.g. "【煤油】丧 丧 熊 9:59:54 PM"
 const copyFromChat: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regHeader = new RegExp(`^${regTitle.source}(.*) (${regTime.source})$`);
+    const regDateTime = new RegExp(`(?:\\d{1,4}\\/\\d{1,2}\\/\\d{1,4} )?${regTime.source}`);
+    const regHeader = new RegExp(`^${regTitle.source}(.*?) (${regDateTime.source})$`);
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -275,7 +251,6 @@ export function parseChat(data: string): ParseResult {
         copyFromMessageManager,
         copyFromMobile,
         exportFromLog,
-        copyFromSideWindow,
         copyFromChat,
       ]) {
         const result = logConfig.headerParser(line);
