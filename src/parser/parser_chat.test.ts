@@ -243,6 +243,21 @@ describe('copied from message manager', () => {
     ).toMatchSnapshot();
   });
 
+  it("Chinese time", () => {
+    const text = `
+织练取(958884) 上午 3:13:28
+“——1。
+白菜<indo@qq.com> 上午 3:14:30
+“我2”
+"门3"
+白菜<indo@qq.com> 下午 3:16:49
+嫌疑
+是出
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 
   it("system messages", () => {
     const text = `

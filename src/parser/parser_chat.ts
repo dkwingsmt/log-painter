@@ -64,7 +64,7 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
 
 const regNumber = /\(\d+\)|<.+@.+\..+>/;
 const regTitle = /(?:【(.{1,6})】)?/;
-const regTime = /\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM|上午|下午))?/;
+const regTime = /(?:(?:上午|下午) )?\d{1,2}:\d{2}:\d{2}(?: (?:AM|PM))?/;
 
 function removeMobileDateConverter(logLine: ParsedLine | null): ParsedLine | null {
   if (logLine == null)
