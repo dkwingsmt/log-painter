@@ -126,7 +126,7 @@ interface StepConfigPlayersProps {
 const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPlayersProps) => {
   const { playerIds, players, setPlayer } = props;
   return (
-    <Grid container>
+    <Grid container style={{ overflowY: 'auto' }}>
       {playerIds.map((playerId: string) => {
         const player = players[playerId];
         return (
