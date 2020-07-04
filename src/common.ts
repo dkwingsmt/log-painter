@@ -76,7 +76,8 @@ export const presetDescribedColors: DescribedColor[] = [
   { value: "maroon", name: "紫红" },
   { value: "limegreen", name: "莱姆" },
   { value: "white", name: "白色" },
-  { value: "brown", name: "蓝色" },
+  { value: "brown", name: "棕色" },
+  { value: "blue", name: "蓝色" },
   { value: "pink", name: "粉红" },
 ].map(({ value, ...others }) => ({
   ...others,
