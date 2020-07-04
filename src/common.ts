@@ -35,12 +35,14 @@ export interface GeneralConfig {
   removeLinesStartedWithParenthesis?: boolean;
   removeLinesStartedWithDot?: boolean;
   removeLinesStartedWithLenticular?: boolean;
+  regularizeQuotes?: boolean;
 }
 
 export const defaultGeneralConfig: Required<GeneralConfig> = {
   removeLinesStartedWithParenthesis: false,
   removeLinesStartedWithDot: false,
   removeLinesStartedWithLenticular: false,
+  regularizeQuotes: false,
 };
 
 export const getGeneralConfig = <K extends keyof GeneralConfig>(config: GeneralConfig, key: K): GeneralConfig[K] => {

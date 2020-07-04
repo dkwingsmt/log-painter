@@ -11,6 +11,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { useStepperStyles } from './App-classes';
 import { AnalysedLine, Configuration, getGeneralConfig, GeneralConfig, ConfigPlayer } from 'common';
 import { saveConfig } from './storage';
+import { regularizeQuotes } from './postprocesses';
 
 export interface StepResultInitState {
   lines: AnalysedLine[];
@@ -49,6 +50,7 @@ const useStyles = makeStyles(() =>
   }),
 );
 
+
 const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): AnalysedLine[] => {
   let resultLines: AnalysedLine[] = lines;
   if (getGeneralConfig(generalConfig, 'removeLinesStartedWithParenthesis')) {
@@ -65,6 +67,12 @@ const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): Anal
     resultLines = resultLines.filter((line: AnalysedLine) => {
       return !['【'].includes(line.content[0][0]);
     });
+  }
+  if (getGeneralConfig(generalConfig, 'regularizeQuotes')) {
+    resultLines = resultLines.map((line: AnalysedLine) => ({
+      ...line,
+      content: regularizeQuotes(line.content),
+    }));
   }
   return resultLines;
 };

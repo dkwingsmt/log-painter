@@ -215,6 +215,21 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
         }
         label="去掉以【开头的行"
       />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={getGeneralConfig(value, 'regularizeQuotes')}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+              setValue({
+                ...value,
+                regularizeQuotes: event.target.checked,
+              });
+            }}
+            color="primary"
+          />
+        }
+        label="自动纠正前后引号"
+      />
     </FormGroup>
   );
 };
