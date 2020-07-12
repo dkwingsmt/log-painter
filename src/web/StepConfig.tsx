@@ -12,7 +12,15 @@ import Select from '@material-ui/core/Select';
 import FormGroup from '@material-ui/core/FormGroup';
 
 import { useStepperStyles } from './App-classes';
-import { getGeneralConfig, Configuration, AnalysedLine, DescribedColor, ConfigPlayer, presetDescribedColors, GeneralConfig } from 'common';
+import {
+  getGeneralConfig,
+  Configuration,
+  AnalysedLine,
+  DescribedColor,
+  ConfigPlayer,
+  bbsColors,
+  GeneralConfig,
+} from 'common';
 
 export interface StepConfigInitState {
   lines: AnalysedLine[];
@@ -85,7 +93,7 @@ const PlayerConfig: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => 
                     props.setColor(event.target.value as string);
                   }}
                 >
-                  {presetDescribedColors.map((describedColor: DescribedColor): React.ReactNode => {
+                  {bbsColors.map((describedColor: DescribedColor): React.ReactNode => {
                     const { value, name, isLight } = describedColor;
                     return (
                       <option

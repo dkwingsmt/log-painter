@@ -1,16 +1,15 @@
 import forEach from 'lodash/forEach';
-import clone from 'lodash/clone';
 import {
   Configuration,
   AnalysedPlayer,
   AnalyseResult,
   ConfigPlayer,
-  presetDescribedColors,
+  bbsColors,
   DescribedColor,
   GroupResult,
 } from 'common';
 
-const presetColors: string[] = presetDescribedColors.map(({ value }: DescribedColor) => value);
+const presetColors: string[] = bbsColors.map(({ value }: DescribedColor) => value);
 
 function findFirstPlayerConfig(
   configPlayers: Record<string, ConfigPlayer>,
