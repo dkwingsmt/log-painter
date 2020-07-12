@@ -24,7 +24,7 @@ import {
 } from 'step-config';
 import { regularizeQuotes } from './postprocesses';
 
-type StepResultProps = EndStepProps<StepConfigResult, Configuration>;
+type StepRenderProps = EndStepProps<StepConfigResult, Configuration>;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -82,7 +82,7 @@ interface SnackbarControl {
   open: boolean;
 }
 
-export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) => {
+export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) => {
   const { args, config, onPrevStep, onRestart } = props;
   const stepperClasses = useStepperStyles();
   const classes = useStyles();

@@ -16,7 +16,7 @@ import './index.css';
 import './App.css';
 import { StepSource, StepSourceResult } from 'step-source';
 import { StepConfig, StepConfigResult, Configuration } from 'step-config';
-import { StepResult } from 'step-result';
+import { StepRender } from 'step-render';
 import {
   MultiStep,
 } from 'common';
@@ -77,7 +77,7 @@ const Main: React.FC<MainProps> = (props: MainProps) => {
     <MultiStep<StepSourceResult, StepConfigResult, Configuration>
       step1={StepSource}
       step2={StepConfig}
-      step3={StepResult}
+      step3={StepRender}
     />
   );
 };
