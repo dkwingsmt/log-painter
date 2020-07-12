@@ -8,23 +8,23 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 
-import { useStepperStyles } from './App-classes';
-import { AnalysedLine, Configuration, getGeneralConfig, GeneralConfig, ConfigPlayer } from 'common';
-import { saveConfig } from './storage';
+import {
+  useStepperStyles,
+  EndStepProps,
+} from 'common';
+import {
+  AnalysedLine,
+} from 'step-source';
+import {
+  StepConfigResult,
+  Configuration,
+  getGeneralConfig,
+  GeneralConfig,
+  ConfigPlayer,
+} from 'step-config';
 import { regularizeQuotes } from './postprocesses';
 
-export interface StepResultInitState {
-  lines: AnalysedLine[];
-  config: Configuration;
-  oldConfig: Configuration;
-}
-
-interface StepResultProps {
-  initState: StepResultInitState;
-  onPrevStep: () => void;
-  onRestart: () => void;
-  show: boolean;
-}
+type StepResultProps = EndStepProps<StepConfigResult, Configuration>;
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -83,13 +83,12 @@ interface SnackbarControl {
 }
 
 export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) => {
-  const { initState, onPrevStep, onRestart } = props;
+  const { args, config, onPrevStep, onRestart } = props;
   const stepperClasses = useStepperStyles();
   const classes = useStyles();
-  const oldConfig = useRef<Configuration>(initState.oldConfig);
-  const playersConfig = useRef<Record<string, ConfigPlayer>>(initState.config.players || {});
+  const playersConfig = useRef<Record<string, ConfigPlayer>>(config.players || {});
   const [processedLines] = useState<AnalysedLine[]>(() => {
-    return processLines(initState.lines, initState.config.general || {});
+    return processLines(args.lines, config.general || {});
   });
   const [snackbarControl, setSnackbarControl] = useState<SnackbarControl>({
     open: false,
@@ -187,10 +186,7 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
           variant="outlined"
           color="secondary"
           className={stepperClasses.ControlButton}
-          onClick={(): void => {
-            saveConfig(oldConfig.current);
-            onPrevStep();
-          }}
+          onClick={onPrevStep}
         >
           上一步
         </Button>
@@ -198,7 +194,7 @@ export const StepResult: React.FC<StepResultProps> = (props: StepResultProps) =>
           variant="contained"
           className={stepperClasses.ControlButton}
           style={{ backgroundColor: '#d4d45f' }}
-          onClick={onRestart}
+          onClick={(): void => { onRestart(config); }}
         >
           再做一团
         </Button>

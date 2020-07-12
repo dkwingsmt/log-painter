@@ -11,26 +11,27 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import FormGroup from '@material-ui/core/FormGroup';
 
-import { useStepperStyles } from './App-classes';
+import {
+  useStepperStyles,
+  MiddleStepProps,
+} from 'common';
 import {
   getGeneralConfig,
   Configuration,
-  AnalysedLine,
-  DescribedColor,
   ConfigPlayer,
-  bbsColors,
   GeneralConfig,
-} from 'common';
-
-export interface StepConfigInitState {
-  lines: AnalysedLine[];
-  playerIds: string[];
-  config: Configuration;
-}
+} from './configs';
+import {
+  AnalysedLine,
+  StepSourceResult,
+} from 'step-source';
+import {
+  DescribedColor,
+  bbsColors,
+} from './colors';
 
 export interface StepConfigResult {
   lines: AnalysedLine[];
-  newConfig: Configuration;
 }
 
 interface PlayerConfigProps {
@@ -117,13 +118,6 @@ const PlayerConfig: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => 
     </Grid>
   );
 };
-
-interface SourceInputProps {
-  initState: StepConfigInitState;
-  onPrevStep: () => void;
-  onNextStep: (result: StepConfigResult) => void;
-  show: boolean;
-}
 
 interface StepConfigPlayersProps {
   playerIds: string[];
@@ -242,17 +236,19 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
   );
 };
 
-export const StepConfig: React.FC<SourceInputProps> = (props: SourceInputProps) => {
-  const { initState, onPrevStep, onNextStep } = props;
+type StepConfigProps = MiddleStepProps<StepSourceResult, StepConfigResult, Configuration>;
+
+export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) => {
+  const { args, config, onPrevStep, onNextStep } = props;
   const stepperClasses = useStepperStyles();
   const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
-    () => initState.config.players || {},
+    () => config.players || {},
   );
-  const playerIds = useRef<string[]>(initState.playerIds);
+  const playerIds = useRef<string[]>(args.playerIds);
   const [generalConfig, setGeneralConfig] = useState<GeneralConfig>(
-    () => initState.config.general || {},
+    () => config.general || {},
   );
-  const lines = useRef<AnalysedLine[]>(initState.lines);
+  const lines = useRef<AnalysedLine[]>(args.lines);
   function setPlayer(id: string, value: ConfigPlayer): void {
     setPlayers({ ...players, [id]: value });
   }
@@ -287,13 +283,15 @@ export const StepConfig: React.FC<SourceInputProps> = (props: SourceInputProps) 
           color="primary"
           className={stepperClasses.ControlButton}
           onClick={(): void => {
-            onNextStep({
-              lines: lines.current,
-              newConfig: {
+            onNextStep(
+              {
+                lines: lines.current,
+              },
+              {
                 players,
                 general: generalConfig,
               },
-            });
+            );
           }}
         >
           下一步

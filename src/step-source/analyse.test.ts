@@ -1,5 +1,6 @@
-import { analyse } from './analyse';
-import { Configuration, GroupResult, AnalysedPlayer, AnalyseResult } from 'common';
+import { GroupResult, AnalysedPlayer } from 'step-source';
+import { analyse, AnalyseResult } from './analyse';
+import { Configuration } from './configs';
 
 it('should work for empty config', () => {
   const player1: AnalysedPlayer = {

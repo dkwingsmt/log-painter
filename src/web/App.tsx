@@ -14,12 +14,12 @@ import Typography from '@material-ui/core/Typography';
 
 import './index.css';
 import './App.css';
-import { StepSource, StepSourceResult, StepSourceInitState } from './StepSource';
-import { StepConfig, StepConfigResult, StepConfigInitState } from './StepConfig';
-import { StepResult, StepResultInitState } from './StepResult';
-import MultiStep from './MultiStep';
-import { saveConfig, loadConfig } from './storage';
-import { analyse } from 'parser';
+import { StepSource, StepSourceResult } from 'step-source';
+import { StepConfig, StepConfigResult, Configuration } from 'step-config';
+import { StepResult } from 'step-result';
+import {
+  MultiStep,
+} from 'common';
 
 const useHeaderStyles = makeStyles(() =>
   createStyles({
@@ -74,34 +74,9 @@ interface MainProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Main: React.FC<MainProps> = (props: MainProps) => {
   return (
-    <MultiStep<
-        StepSourceInitState,
-        StepSourceResult,
-        StepConfigInitState,
-        StepConfigResult,
-        StepResultInitState
-      >
-      onInit1={(): StepSourceInitState => ({})}
+    <MultiStep<StepSourceResult, StepConfigResult, Configuration>
       step1={StepSource}
-      onInit2={(result: StepSourceResult): StepConfigInitState => {
-        const config = loadConfig();
-        const analysedResult = analyse(result, config);
-        return {
-          lines: analysedResult.lines,
-          playerIds: analysedResult.playerIds,
-          config: analysedResult.nextConfig,
-        };
-      }}
       step2={StepConfig}
-      onInit3={(result: StepConfigResult): StepResultInitState => {
-        const oldConfig = loadConfig();
-        saveConfig(result.newConfig);
-        return {
-          lines: result.lines,
-          config: result.newConfig,
-          oldConfig,
-        };
-      }}
       step3={StepResult}
     />
   );

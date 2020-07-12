@@ -41,4 +41,4 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, onClose, body }: AlertD
   );
 };
 
-export default AlertDialog;
+export { AlertDialog };
