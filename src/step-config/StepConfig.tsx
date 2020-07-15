@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import Color from 'color';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
@@ -14,13 +14,11 @@ import FormGroup from '@material-ui/core/FormGroup';
 import {
   useStepperStyles,
   MiddleStepProps,
-} from 'common';
-import {
-  getGeneralConfig,
+  configContext,
   Configuration,
-  ConfigPlayer,
+  PlayerConfig,
   GeneralConfig,
-} from './configs';
+} from 'common';
 import {
   AnalysedLine,
   StepSourceResult,
@@ -54,7 +52,7 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-const PlayerConfig: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => {
+const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => {
   const classes = useStyles();
   return (
     <Grid item xs={6}>
@@ -121,8 +119,8 @@ const PlayerConfig: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => 
 
 interface StepConfigPlayersProps {
   playerIds: string[];
-  players: Record<string, ConfigPlayer>;
-  setPlayer: (id: string, value: ConfigPlayer) => void;
+  players: Record<string, PlayerConfig>;
+  setPlayer: (id: string, value: PlayerConfig) => void;
 }
 
 const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPlayersProps) => {
@@ -132,7 +130,7 @@ const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPl
       {playerIds.map((playerId: string) => {
         const player = players[playerId];
         return (
-          <PlayerConfig
+          <PlayerConfigDashboard
             key={playerId}
             name={player.displayName}
             setName={(value: string): void => {
@@ -169,13 +167,14 @@ interface StepConfigGeneralProps {
 
 const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGeneralProps) => {
   const { value, setValue } = props;
+  const config = useContext<Configuration>(configContext);
 
   return (
     <FormGroup>
       <FormControlLabel
         control={
           <Switch
-            checked={getGeneralConfig(value, 'removeLinesStartedWithParenthesis')}
+            checked={config.general.removeLinesStartedWithParenthesis}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -190,7 +189,7 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <FormControlLabel
         control={
           <Switch
-            checked={getGeneralConfig(value, 'removeLinesStartedWithDot')}
+            checked={config.general.removeLinesStartedWithDot}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -205,7 +204,7 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <FormControlLabel
         control={
           <Switch
-            checked={getGeneralConfig(value, 'removeLinesStartedWithLenticular')}
+            checked={config.general.removeLinesStartedWithLenticular}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -220,7 +219,7 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <FormControlLabel
         control={
           <Switch
-            checked={getGeneralConfig(value, 'regularizeQuotes')}
+            checked={config.general.regularizeQuotes}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -239,9 +238,10 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
 type StepConfigProps = MiddleStepProps<StepSourceResult, StepConfigResult, Configuration>;
 
 export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) => {
-  const { args, config, onPrevStep, onNextStep } = props;
+  const { args, onPrevStep, onNextStep } = props;
+  const config = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
-  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
+  const [players, setPlayers] = useState<Record<string, PlayerConfig>>(
     () => config.players || {},
   );
   const playerIds = useRef<string[]>(args.playerIds);
@@ -249,7 +249,7 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
     () => config.general || {},
   );
   const lines = useRef<AnalysedLine[]>(args.lines);
-  function setPlayer(id: string, value: ConfigPlayer): void {
+  function setPlayer(id: string, value: PlayerConfig): void {
     setPlayers({ ...players, [id]: value });
   }
 

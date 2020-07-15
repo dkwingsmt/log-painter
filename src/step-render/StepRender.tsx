@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import ClipboardJS from 'clipboard';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
@@ -11,16 +11,16 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {
   useStepperStyles,
   EndStepProps,
+  Configuration,
+  GeneralConfig,
+  PlayerConfig,
+  configContext,
 } from 'common';
 import {
   AnalysedLine,
 } from 'step-source';
 import {
   StepConfigResult,
-  Configuration,
-  getGeneralConfig,
-  GeneralConfig,
-  ConfigPlayer,
 } from 'step-config';
 import { regularizeQuotes } from './postprocesses';
 
@@ -53,22 +53,22 @@ const useStyles = makeStyles(() =>
 
 const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): AnalysedLine[] => {
   let resultLines: AnalysedLine[] = lines;
-  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithParenthesis')) {
+  if (generalConfig.removeLinesStartedWithParenthesis) {
     resultLines = resultLines.filter((line: AnalysedLine) => {
       return !['（', '('].includes(line.content[0][0]);
     });
   }
-  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithDot')) {
+  if (generalConfig.removeLinesStartedWithDot) {
     resultLines = resultLines.filter((line: AnalysedLine) => {
       return !['。', '.'].includes(line.content[0][0]);
     });
   }
-  if (getGeneralConfig(generalConfig, 'removeLinesStartedWithLenticular')) {
+  if (generalConfig.removeLinesStartedWithLenticular) {
     resultLines = resultLines.filter((line: AnalysedLine) => {
       return !['【'].includes(line.content[0][0]);
     });
   }
-  if (getGeneralConfig(generalConfig, 'regularizeQuotes')) {
+  if (generalConfig.regularizeQuotes) {
     resultLines = resultLines.map((line: AnalysedLine) => ({
       ...line,
       content: regularizeQuotes(line.content),
@@ -83,10 +83,11 @@ interface SnackbarControl {
 }
 
 export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) => {
-  const { args, config, onPrevStep, onRestart } = props;
+  const { args, onPrevStep, onRestart } = props;
+  const config: Configuration = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
   const classes = useStyles();
-  const playersConfig = useRef<Record<string, ConfigPlayer>>(config.players || {});
+  const playersConfig = useRef<Record<string, PlayerConfig>>(config.players || {});
   const [processedLines] = useState<AnalysedLine[]>(() => {
     return processLines(args.lines, config.general || {});
   });

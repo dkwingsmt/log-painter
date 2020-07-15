@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -9,10 +9,11 @@ import {
   AlertDialog,
   AlertDialogControl,
   StartStepProps,
+  Configuration,
+  configContext,
 } from 'common';
 import { parseAndGroup } from './group';
 import { analyse, AnalyseResult } from './analyse';
-import { Configuration } from 'step-config';
 
 export type StepSourceResult = AnalyseResult;
 
@@ -28,7 +29,8 @@ function processResult(text: string): AnalyseResult | undefined {
 }
 
 export const StepSource: React.FC<StepSourceProps> = (props: StepSourceProps) => {
-  const { onNextStep, config } = props;
+  const { onNextStep } = props;
+  const config: Configuration = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
   const [text, setText] = useState<string>('');
 

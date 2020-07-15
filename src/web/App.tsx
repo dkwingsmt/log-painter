@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SVGInline from 'react-svg-inline';
 
 import GithubIcon from 'simple-icons/icons/github';
@@ -15,11 +15,16 @@ import Typography from '@material-ui/core/Typography';
 import './index.css';
 import './App.css';
 import { StepSource, StepSourceResult } from 'step-source';
-import { StepConfig, StepConfigResult, Configuration } from 'step-config';
+import { StepConfig, StepConfigResult } from 'step-config';
 import { StepRender } from 'step-render';
 import {
   MultiStep,
+  ConfigStorage,
+  configContext,
+  Configuration,
+  realConfigStorage,
 } from 'common';
+import { sanitizeConfig } from 'common/configs';
 
 const useHeaderStyles = makeStyles(() =>
   createStyles({
@@ -67,18 +72,30 @@ const Header: React.FC<HeaderProps> = ({ repoUrl }: HeaderProps) => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface MainProps {
+  configStorage: ConfigStorage;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Main: React.FC<MainProps> = (props: MainProps) => {
+  const { configStorage } = props;
+  const [config, setConfig] = useState<Configuration>((): Configuration => {
+    return sanitizeConfig(configStorage.load());
+  });
+  const ConfigProvider = configContext.Provider;
+  const saveConfig = (value: Configuration): void => {
+    setConfig(value);
+    configStorage.save(value);
+  };
   return (
-    <MultiStep<StepSourceResult, StepConfigResult, Configuration>
-      step1={StepSource}
-      step2={StepConfig}
-      step3={StepRender}
-    />
+    <ConfigProvider value={config}>
+      <MultiStep<StepSourceResult, StepConfigResult, Configuration>
+        step1={StepSource}
+        step2={StepConfig}
+        step3={StepRender}
+        initConfig={(): Configuration => config}
+        saveConfig={saveConfig}
+      />
+    </ConfigProvider>
   );
 };
 
@@ -101,7 +118,9 @@ const App: React.FC = () => {
           repoUrl='https://github.com/dkwingsmt/log-painter'
         />
         <Container maxWidth='md' className='Body-container'>
-          <Main />
+          <Main
+            configStorage={realConfigStorage}
+          />
         </Container>
       </div>
     </ThemeProvider>

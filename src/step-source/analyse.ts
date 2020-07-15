@@ -8,8 +8,8 @@ import {
 //   DescribedColor,
 // } from './colors';
 import {
-  ConfigPlayer,
-} from 'step-config';
+  PlayerConfig,
+} from 'common';
 
 export interface AnalyseResult {
   lines: AnalysedLine[];
@@ -19,9 +19,9 @@ export interface AnalyseResult {
 // const presetColors: string[] = bbsColors.map(({ value }: DescribedColor) => value);
 
 function findFirstPlayerConfig(
-  configPlayers: Record<string, ConfigPlayer>,
+  configPlayers: Record<string, PlayerConfig>,
   playerIdGroup: string[],
-): ConfigPlayer | null {
+): PlayerConfig | null {
   for (const playerId of playerIdGroup) {
     if (configPlayers[playerId])
       return configPlayers[playerId];
@@ -31,8 +31,8 @@ function findFirstPlayerConfig(
 
 export function analyse(grouped: GroupResult): AnalyseResult {
   const { players, lines } = grouped;
-  const configPlayers: Record<string, ConfigPlayer> = {};
-  const currentPlayers: Record<string, ConfigPlayer> = {};
+  const configPlayers: Record<string, PlayerConfig> = {};
+  const currentPlayers: Record<string, PlayerConfig> = {};
   for (const player of players) {
     let configPlayer = findFirstPlayerConfig(configPlayers, player.allPlayerIds);
     if (!configPlayer) {
