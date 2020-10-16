@@ -140,10 +140,11 @@ function trimNumber(src: string): string {
 
 // Export from log
 // E.g. "2019-09-23 8:43:38 PM 骰娘-Roll100(872001750)"
+// E.g. "2019-09-23 8:43:38 PM 骰娘-Roll100"
 const exportFromLog: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
     const regDateName = new RegExp(`\\d{4}-\\d{2}-\\d{2} ${regTime.source}`);
-    const regHeader = new RegExp(`^(${regDateName.source}) (.*)(${regNumber.source})$`);
+    const regHeader = new RegExp(`^(${regDateName.source}) (.*?)(${regNumber.source})?$`);
     const matches = regHeader.exec(line);
     if (!matches)
       return null;
@@ -151,7 +152,7 @@ const exportFromLog: LogConfig = {
     return {
       player: {
         name,
-        number: trimNumber(number),
+        number: number == null ? undefined : trimNumber(number),
       },
       time,
     };

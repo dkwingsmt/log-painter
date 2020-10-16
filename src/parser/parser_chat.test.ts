@@ -59,6 +59,19 @@ describe('exported from log', () => {
       parseChat(text)
     ).toMatchSnapshot();
   });
+
+  it("Private chat", () => {
+    const text = `
+2017-01-19 8:20:27 PM 暗夜
+aaa
+
+2017-01-19 8:22:24 PM Fish
+bbb
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
 });
 
 describe('copied from sidewindow', () => {
@@ -216,6 +229,19 @@ Paul~K（写不完了...） 10:00:04 PM
 Paul~K（写不完了...） 10:00:04 PM
 2
 3
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+
+  it("Private chat", () => {
+    const text = `
+暗夜 10/15/2020 10:57:47 PM
+111
+
+Fl 10/15/2020 10:57:59 PM
+222
     `;
     expect(
       parseChat(text)

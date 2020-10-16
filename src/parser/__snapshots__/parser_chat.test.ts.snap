@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`copied from chat Private chat 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "111",
+      ],
+      "player": Object {
+        "name": "暗夜",
+        "title": undefined,
+      },
+      "time": "10/15/2020 10:57:47 PM",
+    },
+    Object {
+      "content": Array [
+        "222",
+      ],
+      "player": Object {
+        "name": "Fl",
+        "title": undefined,
+      },
+      "time": "10/15/2020 10:57:59 PM",
+    },
+  ],
+}
+`;
+
 exports[`copied from chat basic 1`] = `
 Object {
   "logLines": Array [
@@ -438,6 +465,33 @@ Object {
         "title": undefined,
       },
       "time": "2/14/2020 9:17:31 PM",
+    },
+  ],
+}
+`;
+
+exports[`exported from log Private chat 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "aaa",
+      ],
+      "player": Object {
+        "name": "暗夜",
+        "number": undefined,
+      },
+      "time": "2017-01-19 8:20:27 PM",
+    },
+    Object {
+      "content": Array [
+        "bbb",
+      ],
+      "player": Object {
+        "name": "Fish",
+        "number": undefined,
+      },
+      "time": "2017-01-19 8:22:24 PM",
     },
   ],
 }
