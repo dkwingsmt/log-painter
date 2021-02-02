@@ -94,7 +94,6 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
   const [snackbarControl, setSnackbarControl] = useState<SnackbarControl>({
     open: false,
   });
-  console.log(snackbarControl);
   const alertOnSnackbar = (body: React.ReactNode): void => {
     setSnackbarControl({ body, open: true });
   };
@@ -208,7 +207,6 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
         open={snackbarControl.open}
         autoHideDuration={6000}
         onClose={(): void => {
-          console.trace();
           setSnackbarControl({
             ...snackbarControl,
             open: false,

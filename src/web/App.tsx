@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SVGInline from 'react-svg-inline';
+import preval from 'preval.macro';
 
 import GithubIcon from 'simple-icons/icons/github';
 
@@ -122,6 +123,16 @@ const App: React.FC = () => {
             configStorage={realConfigStorage}
           />
         </Container>
+        <p
+          style={{
+            textAlign: 'center',
+            marginTop: 100,
+            color: '#dddddd',
+            fontSize: 'small',
+          }}
+        >
+            最后更新时间：{preval`module.exports = new Date().toLocaleDateString("zh-cn", {dateStyle: "full"})`}
+        </p>
       </div>
     </ThemeProvider>
   );

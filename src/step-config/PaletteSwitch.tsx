@@ -129,7 +129,7 @@ export const PaletteSwitch: React.FC<PaletteSwitchProps> = (props: PaletteSwitch
               </div>
               <div className={classes.descriptionDisplay}>
                 {Object.values(colorPalettes[dialogSelect].contents()).map((color: DescribedColor) => (
-                  <div className={classes.descriptionDisplayCell} style={{ background: color.value }} />
+                  <div key={color.value} className={classes.descriptionDisplayCell} style={{ background: color.value }} />
                 ))}
               </div>
             </div>

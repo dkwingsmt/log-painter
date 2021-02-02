@@ -55,18 +55,16 @@ const MultiStep = <O1, O2, Config>(
 
   return (
     <Grid container xs={12}>
-      {o1 != null ? null : (
-        <Step1
-          key={`${session}-1`}
-          show={initStates.length === 0}
-          onNextStep={(result: O1, config: Config): void => {
-            pushConfig(config);
-            setInitStates([
-              result,
-            ]);
-          }}
-        />
-      )}
+      <Step1
+        key={`${session}-1`}
+        show={initStates.length === 0}
+        onNextStep={(result: O1, config: Config): void => {
+          pushConfig(config);
+          setInitStates([
+            result,
+          ]);
+        }}
+      />
 
       {o1 == null ? null : (
         <Step2
@@ -76,7 +74,6 @@ const MultiStep = <O1, O2, Config>(
           onPrevStep={(): void => {
             popConfig();
             setInitStates([
-              initStates[0],
             ]);
           }}
           onNextStep={(result: O2, config: Config): void => {
@@ -98,7 +95,6 @@ const MultiStep = <O1, O2, Config>(
             popConfig();
             setInitStates([
               initStates[0],
-              initStates[1],
             ]);
           }}
           onRestart={(config: Config): void => {
