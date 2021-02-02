@@ -1,5 +1,6 @@
 import React, { useState, useRef, useContext } from 'react';
 
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -23,42 +24,66 @@ import {
   PaletteInfo,
   colorPalettes,
 } from 'common';
+import { DescribedColor } from 'common/colors';
 
 interface PaletteSwitchProps {
   value: ColorPalette;
   setValue: (value: ColorPalette) => void;
+  className?: string;
 }
 
+const useStyles = makeStyles((/*theme: Theme*/) =>
+  createStyles({
+    outerButton: {
+      marginLeft: 10,
+    },
+    paper: {
+      display: 'flex',
+      flexDirection: 'row',
+      background: '#f5f5f5',
+    },
+    menu: {
+      flex: '100pt 0 0',
+    },
+    descriptionBox: {
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: 'medium',
+      overflowX: 'hidden',
+    },
+    descriptionText: {
+      flex: '80pt 1 0',
+      padding: 20,
+    },
+    descriptionDisplay: {
+      flex: '20pt 0 0',
+      height: 20,
+      display: 'inline-flex',
+      background: 'white',
+    },
+    descriptionDisplayCell: {
+      flex: '1',
+      height: 20,
+    },
+  }),
+);
+
 export const PaletteSwitch: React.FC<PaletteSwitchProps> = (props: PaletteSwitchProps) => {
-  const { value, setValue } = props;
-  const anchorRef = React.useRef(null);
-  const [popperOpen, setPopperOpen] = React.useState<boolean>(false);
+  const { value, setValue, className } = props;
+  const classes = useStyles();
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
-  const [dialogToSwitch, setDialogToSwitch] = React.useState<PaletteInfo>(Object.values(colorPalettes)[0]);
+  const [dialogSelect, setDialogSelect] = React.useState<ColorPalette>(Object.values(colorPalettes)[0].id);
 
   const current = colorPalettes[value];
 
-  const handleTogglePopper = () => {
-    setPopperOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleClosePopper = () => {
-    setPopperOpen(false);
-  }
-
-  const handleMenuItemClick = (palette: PaletteInfo) => {
-    if (palette.id != current.id) {
-      setDialogOpen(true);
-      setDialogToSwitch(palette);
-    } else {
-      handleClosePopper()
-    }
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+    setDialogSelect(value);
   }
 
   const handleConfirmDialog = () => {
     setDialogOpen(false);
-    handleClosePopper();
-    setValue(dialogToSwitch.id);
+    setValue(dialogSelect);
   }
 
   const handleCloseDialog = () => {
@@ -66,55 +91,55 @@ export const PaletteSwitch: React.FC<PaletteSwitchProps> = (props: PaletteSwitch
   }
 
   return (
-    <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
+    <div className={className}>
+      当前配色方案：{current.name}
       <Button
-        color="primary"
+        color="secondary"
         size="small"
-        onClick={handleTogglePopper}
+        variant="contained"
+        onClick={handleOpenDialog}
+        className={classes.outerButton}
       >
-        当前配色方案：{current.name}
-        <ArrowDropDownIcon />
+        切换
       </Button>
-      <Popper open={popperOpen} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClosePopper}>
-                <MenuList id="split-button-menu">
-                  {Object.values(colorPalettes).map((palette: PaletteInfo) => (
-                    <MenuItem
-                      key={palette.id}
-                      selected={palette.id == current.id}
-                      onClick={() => handleMenuItemClick(palette)}
-                    >
-                      {palette.name}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
       <Dialog
         open={dialogOpen}
         onClose={handleCloseDialog}
       >
         <DialogTitle>更换配色方案</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText>
             你当前的配色方案是“{current.name}”。<br />
-            你即将更换为“{dialogToSwitch.name}”。{dialogToSwitch.description}<br />
-            更换配色方案后，所有现有配色设置将重置。<br />
+          </DialogContentText>
+          <Paper className={classes.paper}>
+            <MenuList className={classes.menu}>
+              {Object.values(colorPalettes).map((palette: PaletteInfo) => (
+                <MenuItem
+                  key={palette.id}
+                  selected={palette.id == dialogSelect}
+                  onClick={() => { setDialogSelect(palette.id); }}
+                >
+                  {palette.name}
+                </MenuItem>
+              ))}
+            </MenuList>
+            <div className={classes.descriptionBox}>
+              <div className={classes.descriptionText}>
+                {colorPalettes[dialogSelect].description}
+              </div>
+              <div className={classes.descriptionDisplay}>
+                {Object.values(colorPalettes[dialogSelect].contents()).map((color: DescribedColor) => (
+                  <div className={classes.descriptionDisplayCell} style={{ background: color.value }} />
+                ))}
+              </div>
+            </div>
+          </Paper>
+          <DialogContentText>
+            更换配色方案后，所有现有配色设置将重置。
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleConfirmDialog} color="primary" autoFocus>
+          <Button onClick={handleConfirmDialog} color="primary" variant="contained" disabled={dialogSelect == value}>
             确认更换
           </Button>
           <Button onClick={handleCloseDialog} color="secondary">
@@ -122,6 +147,6 @@ export const PaletteSwitch: React.FC<PaletteSwitchProps> = (props: PaletteSwitch
           </Button>
         </DialogActions>
       </Dialog>
-    </ButtonGroup>
+    </div>
   );
 }

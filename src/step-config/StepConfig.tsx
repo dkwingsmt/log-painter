@@ -172,17 +172,28 @@ const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPl
 };
 
 
+const useConfigStyles = makeStyles((/*theme: Theme*/) =>
+  createStyles({
+    PaletteSwitch: {
+      marginBottom: 10,
+      marginTop: 5,
+    },
+  }),
+);
+
 interface StepConfigGeneralProps {
   value: GeneralConfig;
   setValue: (value: GeneralConfig) => void;
   setPalette: (value: ColorPalette) => void;
+  className?: string;
 }
 
 const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGeneralProps) => {
-  const { value, setValue, setPalette } = props;
+  const { value, setValue, setPalette, className } = props;
+  const classes = useConfigStyles();
 
   return (
-    <FormGroup>
+    <FormGroup className={className}>
       <FormControlLabel
         control={
           <Switch
@@ -246,10 +257,12 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <PaletteSwitch
         value={value.palette}
         setValue={setPalette}
+        className={classes.PaletteSwitch}
       />
     </FormGroup>
   );
 };
+
 
 type StepConfigProps = MiddleStepProps<StepSourceResult, StepConfigResult, Configuration>;
 
