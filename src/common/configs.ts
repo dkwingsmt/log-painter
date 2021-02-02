@@ -40,7 +40,7 @@ export const sanitizeConfig = (value: {} | undefined): Configuration => {
     },
   };
   if (!(result.general.palette in colorPalettes)) {
-    result.general.palette = defaultGeneralConfig.palette;
+    result.general.palette = value == null ? 'v2' : 'bbs';
   }
   return result;
 };

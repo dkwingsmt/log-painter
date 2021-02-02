@@ -92,7 +92,7 @@ export const colorPalettes: Record<ColorPalette, PaletteInfo> = {
   'v2': {
     id: 'v2',
     name: '色板v2（推荐）',
-    description: '“色板v2”包括31个精心挑选的颜色，保证了色彩间的对比度以及与白色背景的对比度，缺点是无法输出至BBS代码。',
+    description: '“色板v2”包括31个精心挑选的颜色，增强了色彩间的对比度以及与白色背景的对比度，缺点是无法输出至BBS代码。',
     contents: once(() => initializeColors(rawV2Colors)),
   },
   'bbs': {

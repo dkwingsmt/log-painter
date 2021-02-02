@@ -33,6 +33,7 @@ import {
   StepSourceResult,
 } from 'step-source';
 import { DescribedColor } from 'common/colors';
+import { PaletteSwitch } from './PaletteSwitch';
 
 export interface StepConfigResult {
   lines: AnalysedLine[];
@@ -92,7 +93,8 @@ const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigP
                   style={{
                     backgroundColor: color,
                     color: Color(color).isLight() ? 'black' : 'white',
-                    padding: 4,
+                    padding: '4px 0px',
+                    textAlign: 'center',
                   }}
                   native
                   value={color}
@@ -109,6 +111,7 @@ const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigP
                         style={{
                           backgroundColor: value,
                           color: isLight ? 'black' : 'white',
+                          textAlign: 'center',
                         }}
                       >
                         {name || value}
@@ -168,13 +171,15 @@ const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPl
   );
 };
 
+
 interface StepConfigGeneralProps {
   value: GeneralConfig;
   setValue: (value: GeneralConfig) => void;
+  setPalette: (value: ColorPalette) => void;
 }
 
 const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGeneralProps) => {
-  const { value, setValue } = props;
+  const { value, setValue, setPalette } = props;
 
   return (
     <FormGroup>
@@ -238,6 +243,10 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
         }
         label="自动纠正前后引号"
       />
+      <PaletteSwitch
+        value={value.palette}
+        setValue={setPalette}
+      />
     </FormGroup>
   );
 };
@@ -256,12 +265,12 @@ function initializePlayers(
   analysePlayers: AnalysedPlayer[],
   playerConfigs: Record<string, PlayerConfig>,
   colors: Record<string, DescribedColor>,
-): ConfigPlayer[] {
+): Record<string, ConfigPlayer> {
   const availableColors = {...colors};
-  return analysePlayers.map((source: AnalysedPlayer) => {
+  const result = analysePlayers.map((source: AnalysedPlayer) => {
     const existingConfig = playerConfigs[source.playerId];
     const sourceNames = reverse(Array.from(source.names));
-    const result: ConfigPlayer = existingConfig != null ? {
+    const playerResult: ConfigPlayer = existingConfig != null ? {
       id: source.playerId,
       name: existingConfig.displayName,
       nameCandidates: uniq([existingConfig.displayName, ...sourceNames]),
@@ -274,13 +283,14 @@ function initializePlayers(
       color: '',
       enabled: true,
     };
-    if (!(result.color in colors)) {
+    if (!(playerResult.color in colors)) {
       const color = Object.keys(availableColors)[0];
-      delete availableColors[color];
-      result.color = color;
+      playerResult.color = color;
     }
-    return result;
+    delete availableColors[playerResult.color];
+    return playerResult;
   });
+  return fromPairs(result.map((player: ConfigPlayer) => [player.id, player]));
 }
 
 export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) => {
@@ -288,20 +298,23 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
 
   const config = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
-  const palette = colorPalettes[config.general.palette];
-  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
-    () => fromPairs(
-      initializePlayers(args.players, config.players, palette.contents())
-      .map((player: ConfigPlayer) => [player.id, player]),
-    ),
-  );
   const [generalConfig, setGeneralConfig] = useState<GeneralConfig>(
     () => config.general || {},
+  );
+  const palette = colorPalettes[generalConfig.palette];
+  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
+    initializePlayers(args.players, config.players, palette.contents()),
   );
   const lines = useRef<AnalysedLine[]>(args.lines);
 
   function setPlayer(id: string, value: ConfigPlayer): void {
     setPlayers({ ...players, [id]: value });
+  }
+
+  function handleSetPalette(value: ColorPalette): void {
+    setGeneralConfig({ ...generalConfig, palette: value });
+    const palette = colorPalettes[value];
+    setPlayers(initializePlayers(args.players, config.players, palette.contents()));
   }
 
   if (!props.show)
@@ -313,6 +326,7 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
         <StepConfigGeneral
           value={generalConfig}
           setValue={setGeneralConfig}
+          setPalette={handleSetPalette}
         />
         <StepConfigPlayers
           players={players}
