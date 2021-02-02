@@ -1,11 +1,25 @@
 import values from 'lodash/values';
 
 import { parseChat, ParseResult, ParsedPlayer } from './parser_chat';
-import {
-  GroupResult,
-  AnalysedLine,
-  AnalysedPlayer,
-} from 'common';
+
+export interface AnalysedLine {
+  playerId: string;
+  time?: string;
+  title?: string;
+  content: string[];
+}
+
+export interface AnalysedPlayer {
+  playerId: string;
+  allPlayerIds: string[];
+  number?: string;
+  name: string;
+}
+
+export interface GroupResult {
+  players: AnalysedPlayer[];
+  lines: AnalysedLine[];
+};
 
 function getPlayerIdGroup(player: ParsedPlayer): string[] {
   const ids: string[] = [];

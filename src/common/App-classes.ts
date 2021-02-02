@@ -1,6 +1,6 @@
-import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 
-export const useStepperStyles = makeStyles((_theme: Theme) =>
+export const useStepperStyles = makeStyles((/*theme: Theme*/) =>
   createStyles({
     Control: {
       display: 'flex',

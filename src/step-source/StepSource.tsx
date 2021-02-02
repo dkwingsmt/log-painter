@@ -1,29 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
-import AlertDialog, { AlertDialogControl } from './AlertDialog';
-import { useStepperStyles } from './App-classes';
+import {
+  useStepperStyles,
+  AlertDialog,
+  AlertDialogControl,
+  StartStepProps,
+  Configuration,
+  configContext,
+} from 'common';
+import { parseAndGroup } from './group';
+import { analyse, AnalyseResult } from './analyse';
 
-import { parseAndGroup } from 'parser';
-import { GroupResult } from 'common';
+export type StepSourceResult = AnalyseResult;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface StepSourceInitState {
-}
+type StepSourceProps = StartStepProps<StepSourceResult, Configuration>;
 
-export type StepSourceResult = GroupResult;
 
-interface StepSourceProps {
-  initState: StepSourceInitState;
-  onNextStep: (result: StepSourceResult) => void;
-  show: boolean;
+function processResult(text: string): AnalyseResult | undefined {
+  const groupResult = parseAndGroup(text);
+  if (groupResult.players.length === 0 || groupResult.lines.length === 0) {
+    return undefined;
+  }
+  return analyse(groupResult);
 }
 
 export const StepSource: React.FC<StepSourceProps> = (props: StepSourceProps) => {
   const { onNextStep } = props;
+  const config: Configuration = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
   const [text, setText] = useState<string>('');
 
@@ -33,18 +40,6 @@ export const StepSource: React.FC<StepSourceProps> = (props: StepSourceProps) =>
 
   if (!props.show)
     return null;
-
-  function processResult(text: string): GroupResult | undefined {
-    const groupResult = parseAndGroup(text);
-    if (groupResult.players.length === 0 || groupResult.lines.length === 0) {
-      setAlertControl({
-        open: true,
-        body: '无法从这段记录中找到可识别的部分！请检查后再试一次吧！',
-      });
-      return undefined;
-    }
-    return groupResult;
-  }
 
   return (
     <Grid container className={stepperClasses.Container}>
@@ -72,8 +67,13 @@ export const StepSource: React.FC<StepSourceProps> = (props: StepSourceProps) =>
           className={stepperClasses.ControlButton}
           onClick={(): void => {
             const result = processResult(text);
-            if (result) {
-              onNextStep(result);
+            if (result == null) {
+              setAlertControl({
+                open: true,
+                body: '无法从这段记录中找到可识别的部分！请检查后再试一次吧！',
+              });
+            } else {
+              onNextStep(result, config);
             }
           }}
         >
