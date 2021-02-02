@@ -1,11 +1,14 @@
 import React from 'react';
 import Store from 'store';
 
+import { ColorPalette, colorPalettes } from './colors';
+
 export interface GeneralConfig {
   removeLinesStartedWithParenthesis: boolean;
   removeLinesStartedWithDot: boolean;
   removeLinesStartedWithLenticular: boolean;
   regularizeQuotes: boolean;
+  palette: ColorPalette;
 }
 
 export const defaultGeneralConfig: GeneralConfig = {
@@ -13,6 +16,7 @@ export const defaultGeneralConfig: GeneralConfig = {
   removeLinesStartedWithDot: false,
   removeLinesStartedWithLenticular: false,
   regularizeQuotes: false,
+  palette: 'v2',
 };
 
 export interface PlayerConfig {
@@ -28,16 +32,20 @@ export interface Configuration {
 
 export const sanitizeConfig = (value: {} | undefined): Configuration => {
   const nonNullValue = (value ?? {}) as Record<string, {}>;
-  return {
+  const result = {
     players: (nonNullValue['players'] ?? {}) as Record<string, PlayerConfig>,
     general: {
       ...defaultGeneralConfig,
       ...nonNullValue['general'] as GeneralConfig
     },
   };
+  if (!(result.general.palette in colorPalettes)) {
+    result.general.palette = defaultGeneralConfig.palette;
+  }
+  return result;
 };
 
-const emptyCofig = sanitizeConfig(undefined);
+const emptyConfig = sanitizeConfig(undefined);
 
 export interface ConfigStorage {
   load: () => Configuration | undefined;
@@ -53,4 +61,4 @@ export const realConfigStorage: ConfigStorage = {
   },
 };
 
-export const configContext: React.Context<Configuration> = React.createContext<Configuration>(emptyCofig);
+export const configContext: React.Context<Configuration> = React.createContext<Configuration>(emptyConfig);

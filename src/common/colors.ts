@@ -45,9 +45,7 @@ const rawBbsColors = [
   { value: "pink", name: "粉红" },
 ];
 
-export const bbsColors = once(() => initializeColors(rawBbsColors));
-
-const rawFreeColors = [
+const rawV2Colors = [
   { value: "black", name: "黑色" },
   { value: "silver", name: "银灰" },
   { value: "#634200", name: "深褐" },
@@ -81,4 +79,26 @@ const rawFreeColors = [
   { value: "#eae3fc", name: "薰衣草紫" },
 ];
 
-export const freeColors = once(() => initializeColors(rawFreeColors));
+export type ColorPalette = 'bbs' | 'v2';
+
+export interface PaletteInfo {
+  id: ColorPalette;
+  name: string;
+  description: string;
+  contents: () => Record<string, DescribedColor>,
+}
+
+export const colorPalettes: Record<ColorPalette, PaletteInfo> = {
+  'v2': {
+    id: 'v2',
+    name: '色板v2（推荐）',
+    description: '“色板v2”包括31个精心挑选的颜色，保证了色彩间的对比度以及与白色背景的对比度，缺点是无法输出至BBS代码。',
+    contents: once(() => initializeColors(rawV2Colors)),
+  },
+  'bbs': {
+    id: 'bbs',
+    name: 'BBS颜色',
+    description: '“BBS色板”包含18个常见于BBS的颜色，是传统的配色方案，缺点是色彩间的区分度及与背景的对比度无法保证。',
+    contents: once(() => initializeColors(rawBbsColors)),
+  },
+}

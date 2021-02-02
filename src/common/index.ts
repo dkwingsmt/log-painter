@@ -22,3 +22,11 @@ export type {
   PlayerConfig,
   Configuration,
 } from './configs';
+
+export type {
+  PaletteInfo,
+  ColorPalette,
+} from './colors';
+export {
+  colorPalettes,
+} from './colors';

@@ -23,16 +23,16 @@ import {
   Configuration,
   PlayerConfig,
   GeneralConfig,
+  ColorPalette,
+  PaletteInfo,
+  colorPalettes,
 } from 'common';
 import {
   AnalysedLine,
   AnalysedPlayer,
   StepSourceResult,
 } from 'step-source';
-import {
-  DescribedColor,
-  bbsColors,
-} from './colors';
+import { DescribedColor } from 'common/colors';
 
 export interface StepConfigResult {
   lines: AnalysedLine[];
@@ -42,6 +42,7 @@ interface PlayerConfigProps {
   name: string;
   color: string;
   enabled: boolean;
+  palette: Record<string, DescribedColor>;
   setName: (value: string) => void;
   setColor: (value: string) => void;
   setEnabled: (value: boolean) => void;
@@ -59,6 +60,7 @@ const useStyles = makeStyles(() =>
 );
 
 const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => {
+  const { enabled, setEnabled, name, setName, color, setColor, palette } = props;
   const classes = useStyles();
   return (
     <Grid item xs={6}>
@@ -69,7 +71,7 @@ const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigP
             variant="outlined"
             fullWidth
             onBlur={(event: React.FocusEvent<HTMLInputElement>): void => {
-              props.setName(event.target.value || '');
+              setName(event.target.value || '');
             }}
           />
         </Grid>
@@ -78,28 +80,28 @@ const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigP
             <FormGroup row className={classes.Center}>
               <FormControl>
                 <Switch
-                  checked={props.enabled}
+                  checked={enabled}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>, checked: boolean): void => {
-                    props.setEnabled(checked);
+                    setEnabled(checked);
                   }}
                   value="primary"
                 />
               </FormControl>
-              <FormControl style={props.enabled ? {} : { visibility: 'hidden' }}>
+              <FormControl style={enabled ? {} : { visibility: 'hidden' }}>
                 <Select
                   style={{
-                    backgroundColor: props.color,
-                    color: Color(props.color).isLight() ? 'black' : 'white',
+                    backgroundColor: color,
+                    color: Color(color).isLight() ? 'black' : 'white',
                     padding: 4,
                   }}
                   native
-                  value={props.color}
+                  value={color}
                   onChange={(event: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
-                    props.setColor(event.target.value as string);
+                    setColor(event.target.value as string);
                   }}
                 >
-                  {Object.values(bbsColors()).map((describedColor: DescribedColor): React.ReactNode => {
-                    const { value, name, isLight } = describedColor;
+                  {Object.values(palette).map((paletteColor: DescribedColor): React.ReactNode => {
+                    const { value, name, isLight } = paletteColor;
                     return (
                       <option
                         key={value}
@@ -126,10 +128,11 @@ const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigP
 interface StepConfigPlayersProps {
   players: Record<string, ConfigPlayer>;
   setPlayer: (id: string, value: ConfigPlayer) => void;
+  palette: Record<string, DescribedColor>;
 }
 
 const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPlayersProps) => {
-  const { players, setPlayer } = props;
+  const { players, setPlayer, palette } = props;
   return (
     <Grid container style={{ overflowY: 'auto' }}>
       {Object.values(players).map((player: ConfigPlayer) => {
@@ -157,6 +160,7 @@ const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPl
                 color: value,
               });
             }}
+            palette={palette}
           />
         );
       })}
@@ -284,9 +288,10 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
 
   const config = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
+  const palette = colorPalettes[config.general.palette];
   const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
     () => fromPairs(
-      initializePlayers(args.players, config.players, bbsColors())
+      initializePlayers(args.players, config.players, palette.contents())
       .map((player: ConfigPlayer) => [player.id, player]),
     ),
   );
@@ -312,6 +317,7 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
         <StepConfigPlayers
           players={players}
           setPlayer={setPlayer}
+          palette={palette.contents()}
         />
       </Grid>
       <Grid item xs={12} justify="flex-end" className={stepperClasses.Control}>
