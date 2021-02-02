@@ -11,10 +11,7 @@ import {
   PlayerConfig,
 } from 'common';
 
-export interface AnalyseResult {
-  lines: AnalysedLine[];
-  playerIds: string[];
-}
+export type AnalyseResult = GroupResult;
 
 // const presetColors: string[] = bbsColors.map(({ value }: DescribedColor) => value);
 
@@ -30,24 +27,5 @@ function findFirstPlayerConfig(
 }
 
 export function analyse(grouped: GroupResult): AnalyseResult {
-  const { players, lines } = grouped;
-  const configPlayers: Record<string, PlayerConfig> = {};
-  const currentPlayers: Record<string, PlayerConfig> = {};
-  for (const player of players) {
-    let configPlayer = findFirstPlayerConfig(configPlayers, player.allPlayerIds);
-    if (!configPlayer) {
-      configPlayer = {
-        enabled: true,
-        displayName: player.name,
-        color: 'black',
-      };
-    }
-    for (const playerId of player.allPlayerIds) {
-      currentPlayers[playerId] = configPlayer;
-    }
-  };
-  return {
-    lines,
-    playerIds: players.map((player: AnalysedPlayer) => player.playerId),
-  };
+  return grouped;
 }

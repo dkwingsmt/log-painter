@@ -1,6 +1,11 @@
 import React, { useState, useRef, useContext } from 'react';
 import Color from 'color';
 
+import fromPairs from 'lodash/fromPairs';
+import mapValues from 'lodash/mapValues';
+import reverse from 'lodash/reverse';
+import uniq from 'lodash/uniq';
+
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -21,6 +26,7 @@ import {
 } from 'common';
 import {
   AnalysedLine,
+  AnalysedPlayer,
   StepSourceResult,
 } from 'step-source';
 import {
@@ -92,7 +98,7 @@ const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigP
                     props.setColor(event.target.value as string);
                   }}
                 >
-                  {bbsColors.map((describedColor: DescribedColor): React.ReactNode => {
+                  {Object.values(bbsColors()).map((describedColor: DescribedColor): React.ReactNode => {
                     const { value, name, isLight } = describedColor;
                     return (
                       <option
@@ -118,37 +124,35 @@ const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigP
 };
 
 interface StepConfigPlayersProps {
-  playerIds: string[];
-  players: Record<string, PlayerConfig>;
-  setPlayer: (id: string, value: PlayerConfig) => void;
+  players: Record<string, ConfigPlayer>;
+  setPlayer: (id: string, value: ConfigPlayer) => void;
 }
 
 const StepConfigPlayers: React.FC<StepConfigPlayersProps> = (props: StepConfigPlayersProps) => {
-  const { playerIds, players, setPlayer } = props;
+  const { players, setPlayer } = props;
   return (
     <Grid container style={{ overflowY: 'auto' }}>
-      {playerIds.map((playerId: string) => {
-        const player = players[playerId];
+      {Object.values(players).map((player: ConfigPlayer) => {
         return (
           <PlayerConfigDashboard
-            key={playerId}
-            name={player.displayName}
+            key={player.id}
+            name={player.name}
             setName={(value: string): void => {
-              setPlayer(playerId, {
+              setPlayer(player.id, {
                 ...player,
-                displayName: value,
+                name: value,
               });
             }}
             enabled={player.enabled}
             setEnabled={(value: boolean): void => {
-              setPlayer(playerId, {
+              setPlayer(player.id, {
                 ...player,
                 enabled: value,
               });
             }}
             color={player.color}
             setColor={(value: string): void => {
-              setPlayer(playerId, {
+              setPlayer(player.id, {
                 ...player,
                 color: value,
               });
@@ -167,14 +171,13 @@ interface StepConfigGeneralProps {
 
 const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGeneralProps) => {
   const { value, setValue } = props;
-  const config = useContext<Configuration>(configContext);
 
   return (
     <FormGroup>
       <FormControlLabel
         control={
           <Switch
-            checked={config.general.removeLinesStartedWithParenthesis}
+            checked={value.removeLinesStartedWithParenthesis}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -189,7 +192,7 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <FormControlLabel
         control={
           <Switch
-            checked={config.general.removeLinesStartedWithDot}
+            checked={value.removeLinesStartedWithDot}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -204,7 +207,7 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <FormControlLabel
         control={
           <Switch
-            checked={config.general.removeLinesStartedWithLenticular}
+            checked={value.removeLinesStartedWithLenticular}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -219,7 +222,7 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
       <FormControlLabel
         control={
           <Switch
-            checked={config.general.regularizeQuotes}
+            checked={value.regularizeQuotes}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
               setValue({
                 ...value,
@@ -237,19 +240,62 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
 
 type StepConfigProps = MiddleStepProps<StepSourceResult, StepConfigResult, Configuration>;
 
+interface ConfigPlayer {
+  id: string;
+  name: string;
+  nameCandidates: string[];
+  color: string;
+  enabled: boolean;
+}
+
+function initializePlayers(
+  analysePlayers: AnalysedPlayer[],
+  playerConfigs: Record<string, PlayerConfig>,
+  colors: Record<string, DescribedColor>,
+): ConfigPlayer[] {
+  const availableColors = {...colors};
+  return analysePlayers.map((source: AnalysedPlayer) => {
+    const existingConfig = playerConfigs[source.playerId];
+    const sourceNames = reverse(Array.from(source.names));
+    const result: ConfigPlayer = existingConfig != null ? {
+      id: source.playerId,
+      name: existingConfig.displayName,
+      nameCandidates: uniq([existingConfig.displayName, ...sourceNames]),
+      color: existingConfig.color,
+      enabled: existingConfig.enabled,
+    } : {
+      id: source.playerId,
+      name: sourceNames[0],
+      nameCandidates: sourceNames,
+      color: '',
+      enabled: true,
+    };
+    if (!(result.color in colors)) {
+      const color = Object.keys(availableColors)[0];
+      delete availableColors[color];
+      result.color = color;
+    }
+    return result;
+  });
+}
+
 export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) => {
   const { args, onPrevStep, onNextStep } = props;
+
   const config = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
-  const [players, setPlayers] = useState<Record<string, PlayerConfig>>(
-    () => config.players || {},
+  const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
+    () => fromPairs(
+      initializePlayers(args.players, config.players, bbsColors())
+      .map((player: ConfigPlayer) => [player.id, player]),
+    ),
   );
-  const playerIds = useRef<string[]>(args.playerIds);
   const [generalConfig, setGeneralConfig] = useState<GeneralConfig>(
     () => config.general || {},
   );
   const lines = useRef<AnalysedLine[]>(args.lines);
-  function setPlayer(id: string, value: PlayerConfig): void {
+
+  function setPlayer(id: string, value: ConfigPlayer): void {
     setPlayers({ ...players, [id]: value });
   }
 
@@ -264,7 +310,6 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
           setValue={setGeneralConfig}
         />
         <StepConfigPlayers
-          playerIds={playerIds.current}
           players={players}
           setPlayer={setPlayer}
         />
@@ -288,7 +333,11 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
                 lines: lines.current,
               },
               {
-                players,
+                players: mapValues(players, (player: ConfigPlayer): PlayerConfig => ({
+                  displayName: player.name,
+                  color: player.color,
+                  enabled: player.enabled,
+                })),
                 general: generalConfig,
               },
             );

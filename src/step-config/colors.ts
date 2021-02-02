@@ -1,9 +1,27 @@
 import Color from 'color';
 
+import fromPairs from 'lodash/fromPairs';
+import once from 'lodash/once';
+
 export interface DescribedColor {
   value: string;
   name?: string;
   isLight: boolean;
+}
+
+interface RawColor {
+  value: string;
+  name: string;
+}
+
+function initializeColors(rawData: RawColor[]): Record<string, DescribedColor> {
+  return fromPairs(rawData.map(
+    ({ value, ...others }) => [value, {
+      ...others,
+      value,
+      isLight: Color(value).isLight(),
+    }],
+  ));
 }
 
 const rawBbsColors = [
@@ -27,13 +45,7 @@ const rawBbsColors = [
   { value: "pink", name: "粉红" },
 ];
 
-export const bbsColors: DescribedColor[] = rawBbsColors.map(
-  ({ value, ...others }) => ({
-    ...others,
-    value,
-    isLight: Color(value).isLight(),
-  }),
-);
+export const bbsColors = once(() => initializeColors(rawBbsColors));
 
 const rawFreeColors = [
   { value: "black", name: "黑色" },
@@ -69,10 +81,4 @@ const rawFreeColors = [
   { value: "#eae3fc", name: "薰衣草紫" },
 ];
 
-export const freeColors: DescribedColor[] = rawFreeColors.map(
-  ({ value, ...others }) => ({
-    ...others,
-    value,
-    isLight: Color(value).isLight(),
-  }),
-);
+export const freeColors = once(() => initializeColors(rawFreeColors));

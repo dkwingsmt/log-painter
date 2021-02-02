@@ -11,9 +11,7 @@ export interface AnalysedLine {
 
 export interface AnalysedPlayer {
   playerId: string;
-  allPlayerIds: string[];
-  number?: string;
-  name: string;
+  names: Set<string>;
 }
 
 export interface GroupResult {
@@ -21,12 +19,20 @@ export interface GroupResult {
   lines: AnalysedLine[];
 };
 
-function getPlayerIdGroup(player: ParsedPlayer): string[] {
-  const ids: string[] = [];
+function getPlayerId(player: ParsedPlayer): string {
   if (player.number)
-    ids.push(`qq:${player.number}`);
-  ids.push(`name:${player.name}`);
-  return ids;
+    return `qq:${player.number}`;
+  return `name:${player.name}`;
+}
+
+function defaultGroupedPlayer(playerId: string, number: string | undefined): AnalysedPlayer {
+  const names = new Set<string>();
+  if (number != null)
+    names.add(number);
+  return {
+    playerId: playerId,
+    names: names,
+  };
 }
 
 function groupByPlayers(result: ParseResult): GroupResult {
@@ -34,17 +40,12 @@ function groupByPlayers(result: ParseResult): GroupResult {
   const players: Record<string, AnalysedPlayer> = {};
   for (const parsedLine of result.logLines) {
     const { player, time, content } = parsedLine;
-    const playerIdGroup = getPlayerIdGroup(player);
-    const majorPlayerId = playerIdGroup[0];
-    if (!players[majorPlayerId])
-      players[majorPlayerId] = {
-        playerId: majorPlayerId,
-        allPlayerIds: playerIdGroup,
-        name: player.name,
-        number: player.number,
-      };
+    const playerId = getPlayerId(player);
+    if (!players.playerId)
+      players[playerId] = defaultGroupedPlayer(playerId, player.number);
+    players[playerId].names.add(player.name);
     lines.push({
-      playerId: majorPlayerId,
+      playerId: playerId,
       time,
       title: player.title,
       content,
