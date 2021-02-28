@@ -16,6 +16,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import FormGroup from '@material-ui/core/FormGroup';
 
+import { regularizeQuotes } from './postprocesses';
+
 import {
   useStepperStyles,
   MiddleStepProps,
@@ -306,6 +308,32 @@ function initializePlayers(
   return fromPairs(result.map((player: ConfigPlayer) => [player.id, player]));
 }
 
+function postProcess(lines: AnalysedLine[], generalConfig: GeneralConfig): AnalysedLine[] {
+  let resultLines: AnalysedLine[] = lines;
+  if (generalConfig.removeLinesStartedWithParenthesis) {
+    resultLines = resultLines.filter((line: AnalysedLine) => {
+      return !['（', '('].includes(line.content[0][0]);
+    });
+  }
+  if (generalConfig.removeLinesStartedWithDot) {
+    resultLines = resultLines.filter((line: AnalysedLine) => {
+      return !['。', '.'].includes(line.content[0][0]);
+    });
+  }
+  if (generalConfig.removeLinesStartedWithLenticular) {
+    resultLines = resultLines.filter((line: AnalysedLine) => {
+      return !['【'].includes(line.content[0][0]);
+    });
+  }
+  if (generalConfig.regularizeQuotes) {
+    resultLines = resultLines.map((line: AnalysedLine) => ({
+      ...line,
+      content: regularizeQuotes(line.content),
+    }));
+  }
+  return resultLines;
+};
+
 export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) => {
   const { args, onPrevStep, onNextStep } = props;
 
@@ -363,7 +391,7 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
           onClick={(): void => {
             onNextStep(
               {
-                lines: lines.current,
+                lines: postProcess(lines.current, generalConfig),
               },
               {
                 players: mapValues(players, (player: ConfigPlayer): PlayerConfig => ({

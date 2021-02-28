@@ -22,7 +22,6 @@ import {
 import {
   StepConfigResult,
 } from 'step-config';
-import { regularizeQuotes } from './postprocesses';
 
 type StepRenderProps = EndStepProps<StepConfigResult, Configuration>;
 
@@ -51,32 +50,6 @@ const useStyles = makeStyles(() =>
 );
 
 
-const processLines = (lines: AnalysedLine[], generalConfig: GeneralConfig): AnalysedLine[] => {
-  let resultLines: AnalysedLine[] = lines;
-  if (generalConfig.removeLinesStartedWithParenthesis) {
-    resultLines = resultLines.filter((line: AnalysedLine) => {
-      return !['（', '('].includes(line.content[0][0]);
-    });
-  }
-  if (generalConfig.removeLinesStartedWithDot) {
-    resultLines = resultLines.filter((line: AnalysedLine) => {
-      return !['。', '.'].includes(line.content[0][0]);
-    });
-  }
-  if (generalConfig.removeLinesStartedWithLenticular) {
-    resultLines = resultLines.filter((line: AnalysedLine) => {
-      return !['【'].includes(line.content[0][0]);
-    });
-  }
-  if (generalConfig.regularizeQuotes) {
-    resultLines = resultLines.map((line: AnalysedLine) => ({
-      ...line,
-      content: regularizeQuotes(line.content),
-    }));
-  }
-  return resultLines;
-};
-
 interface SnackbarControl {
   body?: React.ReactNode;
   open: boolean;
@@ -88,9 +61,6 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
   const stepperClasses = useStepperStyles();
   const classes = useStyles();
   const playersConfig = useRef<Record<string, PlayerConfig>>(config.players || {});
-  const [processedLines] = useState<AnalysedLine[]>(() => {
-    return processLines(args.lines, config.general || {});
-  });
   const [snackbarControl, setSnackbarControl] = useState<SnackbarControl>({
     open: false,
   });
@@ -159,7 +129,7 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
           >
             <FileCopyIcon />
           </IconButton>
-          {processedLines.map((line: AnalysedLine, paragraphId: number) => {
+          {args.lines.map((line: AnalysedLine, paragraphId: number) => {
             const { playerId, content } = line;
             const player = playersConfig.current[playerId];
             if (!player.enabled)
