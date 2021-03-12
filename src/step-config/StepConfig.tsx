@@ -1,11 +1,11 @@
 import React, { useState, useRef, useContext } from 'react';
 import Color from 'color';
+import memoize from 'fast-memoize';
 
 import fromPairs from 'lodash/fromPairs';
 import mapValues from 'lodash/mapValues';
 import reverse from 'lodash/reverse';
 import uniq from 'lodash/uniq';
-import memoize from 'lodash/memoize';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -303,24 +303,23 @@ function getFirstLines(lines: AnalysedLine[]): AnalysedLine[] {
   return result;
 }
 
-type GetFirstLines = (lines: AnalysedLine[], players: Record<string, ConfigPlayer>) => RendereeLine[];
+type GetFirstLines = (lines: AnalysedLine[]) => AnalysedLine[];
 
 const StepConfigRenderer: React.FC<StepConfigRendererProps> = (props: StepConfigRendererProps) => {
-  const { schemeId, setScheme, className } = props;
-  const memoizedGetFirstLines = useRef<GetFirstLines>(memoize<GetFirstLines>(
-    (lines: AnalysedLine[], players: Record<string, ConfigPlayer>): RendereeLine[] =>
-      getFirstLines(lines).map((line: AnalysedLine) => ({
-        content: line.content,
-        playerName: players[line.playerId]?.name ?? '错误',
-        playerColor: players[line.playerId]?.color ?? 'black',
-      })),
-  )).current;
+  const { players, schemeId, setScheme, className } = props;
+  const memoizedGetFirstLines = useRef(memoize(getFirstLines)).current;
   const classes = useConfigStyles();
 
   const options = Object.values(renderingSchemes).filter((scheme: RenderingScheme) =>
     props.paletteId == 'v2' ? scheme.allowNewPalette : true);
 
-  const firstLines = memoizedGetFirstLines(props.lines, props.players);
+  const firstLines = memoizedGetFirstLines(props.lines)
+    .filter((line: AnalysedLine) => players[line.playerId].enabled)
+    .map((line: AnalysedLine) => ({
+      content: line.content,
+      playerName: players[line.playerId]?.name ?? '错误',
+      playerColor: players[line.playerId]?.color ?? 'black',
+    }));
   const scheme: RenderingScheme = renderingSchemes[schemeId];
 
   return (
