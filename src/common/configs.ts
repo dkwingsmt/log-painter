@@ -2,6 +2,7 @@ import React from 'react';
 import Store from 'store';
 
 import { ColorPalette, colorPalettes } from './colors';
+import { RendererId, renderingSchemes } from './renderers';
 
 export interface GeneralConfig {
   removeLinesStartedWithParenthesis: boolean;
@@ -9,6 +10,7 @@ export interface GeneralConfig {
   removeLinesStartedWithLenticular: boolean;
   regularizeQuotes: boolean;
   palette: ColorPalette;
+  rendererScheme: RendererId;
 }
 
 export const defaultGeneralConfig: GeneralConfig = {
@@ -17,6 +19,7 @@ export const defaultGeneralConfig: GeneralConfig = {
   removeLinesStartedWithLenticular: false,
   regularizeQuotes: false,
   palette: 'v2',
+  rendererScheme: 'standard-rich',
 };
 
 export interface PlayerConfig {
@@ -41,6 +44,13 @@ export const sanitizeConfig = (value: {} | undefined): Configuration => {
   };
   if (!(result.general.palette in colorPalettes)) {
     result.general.palette = value == null ? 'v2' : 'bbs';
+  }
+  if (!(result.general.rendererScheme in renderingSchemes)) {
+    result.general.rendererScheme = 'standard-rich';
+  }
+  if (!renderingSchemes[result.general.rendererScheme].allowNewPalette
+      && result.general.palette == 'v2') {
+    result.general.rendererScheme = 'standard-rich';
   }
   return result;
 };

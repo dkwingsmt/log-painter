@@ -12,7 +12,6 @@ import {
   useStepperStyles,
   EndStepProps,
   Configuration,
-  GeneralConfig,
   PlayerConfig,
   configContext,
 } from 'common';
@@ -22,6 +21,7 @@ import {
 import {
   StepConfigResult,
 } from 'step-config';
+import { renderContent, renderingSchemes } from 'common/renderers';
 
 type StepRenderProps = EndStepProps<StepConfigResult, Configuration>;
 
@@ -60,13 +60,20 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
   const config: Configuration = useContext<Configuration>(configContext);
   const stepperClasses = useStepperStyles();
   const classes = useStyles();
-  const playersConfig = useRef<Record<string, PlayerConfig>>(config.players || {});
+  const playersConfig = useRef<Record<string, PlayerConfig>>(config.players || {}).current;
   const [snackbarControl, setSnackbarControl] = useState<SnackbarControl>({
     open: false,
   });
   const alertOnSnackbar = (body: React.ReactNode): void => {
     setSnackbarControl({ body, open: true });
   };
+  const scheme = renderingSchemes[config.general.rendererScheme];
+  const lines = args.lines.map((line: AnalysedLine) => ({
+    content: line.content,
+    playerName: playersConfig[line.playerId]?.displayName ?? '错误',
+    playerColor: playersConfig[line.playerId]?.color ?? 'black',
+  }));
+
   const [clipboard] = useState<ClipboardJS>((): ClipboardJS => {
     const result: ClipboardJS = new ClipboardJS('#clipboard-button', {
       target: (): Element => {
@@ -129,26 +136,7 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
           >
             <FileCopyIcon />
           </IconButton>
-          {args.lines.map((line: AnalysedLine, paragraphId: number) => {
-            const { playerId, content } = line;
-            const player = playersConfig.current[playerId];
-            if (!player.enabled)
-              return null;
-            return (
-              <p
-                key={paragraphId}
-                style={{
-                  color: player.color,
-                }}
-              >
-                {`<${player.displayName}> `}
-                {content.map((contentLine: string, contentId: number) => {
-                  const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>];
-                  return newLine.concat([<span key={contentId}>{contentLine}</span>]);
-                })}
-              </p>
-            );
-          })}
+          {renderContent(lines, scheme, false)}
         </div>
       </Grid>
       <Grid item xs={12} justify="flex-end" className={stepperClasses.Control}>

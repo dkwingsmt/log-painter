@@ -5,6 +5,7 @@ import fromPairs from 'lodash/fromPairs';
 import mapValues from 'lodash/mapValues';
 import reverse from 'lodash/reverse';
 import uniq from 'lodash/uniq';
+import memoize from 'lodash/memoize';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -15,6 +16,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import FormGroup from '@material-ui/core/FormGroup';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { regularizeQuotes } from './postprocesses';
 
@@ -36,6 +38,8 @@ import {
 } from 'step-source';
 import { DescribedColor } from 'common/colors';
 import { PaletteSwitch } from './PaletteSwitch';
+import { renderContent, RendererId, RenderingScheme, renderingSchemes, RendereeLine } from 'common/renderers';
+import { defaultGeneralConfig } from 'common/configs';
 
 export interface StepConfigResult {
   lines: AnalysedLine[];
@@ -265,6 +269,74 @@ const StepConfigGeneral: React.FC<StepConfigGeneralProps> = (props: StepConfigGe
   );
 };
 
+interface StepConfigRendererProps {
+  lines: AnalysedLine[];
+  players: Record<string, ConfigPlayer>;
+  schemeId: RendererId;
+  paletteId: ColorPalette;
+  setScheme: (value: RendererId) => void;
+  className?: string;
+}
+
+function getFirstLines(lines: AnalysedLine[]): AnalysedLine[] {
+  const visited: Record<string, boolean> = {};
+  const result: AnalysedLine[] = [];
+  lines.forEach((line: AnalysedLine) => {
+    if (!visited[line.playerId]) {
+      result.push(line);
+      visited[line.playerId] = true;
+    }
+  });
+  return result;
+}
+
+type GetFirstLines = (lines: AnalysedLine[], players: Record<string, ConfigPlayer>) => RendereeLine[];
+
+const StepConfigRenderer: React.FC<StepConfigRendererProps> = (props: StepConfigRendererProps) => {
+  const { schemeId, setScheme, className } = props;
+  const memoizedGetFirstLines = useRef<GetFirstLines>(memoize<GetFirstLines>(
+    (lines: AnalysedLine[], players: Record<string, ConfigPlayer>): RendereeLine[] =>
+      getFirstLines(lines).map((line: AnalysedLine) => ({
+        content: line.content,
+        playerName: players[line.playerId]?.name ?? '错误',
+        playerColor: players[line.playerId]?.color ?? 'black',
+      })),
+  )).current;
+  const classes = useConfigStyles();
+
+  const options = Object.values(renderingSchemes).filter((scheme: RenderingScheme) =>
+    props.paletteId == 'v2' ? scheme.allowNewPalette : true);
+
+  const firstLines = memoizedGetFirstLines(props.lines, props.players);
+  const scheme: RenderingScheme = renderingSchemes[schemeId];
+
+  return (
+    <div className={className}>
+      排版格式：
+      <FormControl variant="outlined">
+        <Select
+          value={schemeId}
+          onChange={(change: React.ChangeEvent<{ name?: string; value: unknown }>, child: React.ReactNode) => {
+            const newValue = change.target.value as string;
+            if (newValue in renderingSchemes) {
+              setScheme(newValue as RendererId);
+            }
+          }}
+        >
+          {options.map((scheme: RenderingScheme) => (
+            <MenuItem value={scheme.id}>{scheme.name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <div>
+        {scheme.description}
+      </div>
+      <div>
+        {renderContent(firstLines, scheme, true)}
+      </div>
+    </div>
+  );
+}
 
 type StepConfigProps = MiddleStepProps<StepSourceResult, StepConfigResult, Configuration>;
 
@@ -346,16 +418,29 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
   const [players, setPlayers] = useState<Record<string, ConfigPlayer>>(
     initializePlayers(args.players, config.players, palette.contents()),
   );
-  const lines = useRef<AnalysedLine[]>(args.lines);
 
   function setPlayer(id: string, value: ConfigPlayer): void {
     setPlayers({ ...players, [id]: value });
   }
 
   function handleSetPalette(value: ColorPalette): void {
-    setGeneralConfig({ ...generalConfig, palette: value });
+    const schemePaletteConflict = value == 'v2' &&
+      !renderingSchemes[generalConfig.rendererScheme].allowNewPalette;
+    const newSchemeId = schemePaletteConflict ?
+      defaultGeneralConfig.rendererScheme :
+      generalConfig.rendererScheme;
+
+    setGeneralConfig({
+      ...generalConfig,
+      palette: value,
+      rendererScheme: newSchemeId,
+    });
     const palette = colorPalettes[value];
     setPlayers(initializePlayers(args.players, config.players, palette.contents()));
+  }
+
+  function handleSetRenderer(value: RendererId): void {
+    setGeneralConfig({ ...generalConfig, rendererScheme: value });
   }
 
   if (!props.show)
@@ -374,6 +459,13 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
           setPlayer={setPlayer}
           palette={palette.contents()}
         />
+        <StepConfigRenderer
+          lines={args.lines}
+          players={players}
+          setScheme={handleSetRenderer}
+          schemeId={generalConfig.rendererScheme}
+          paletteId={generalConfig.palette}
+        />
       </Grid>
       <Grid item xs={12} justify="flex-end" className={stepperClasses.Control}>
         <Button
@@ -391,7 +483,7 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
           onClick={(): void => {
             onNextStep(
               {
-                lines: postProcess(lines.current, generalConfig),
+                lines: postProcess(args.lines, generalConfig),
               },
               {
                 players: mapValues(players, (player: ConfigPlayer): PlayerConfig => ({
