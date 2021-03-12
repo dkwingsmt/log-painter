@@ -182,7 +182,20 @@ const useConfigStyles = makeStyles((/*theme: Theme*/) =>
   createStyles({
     PaletteSwitch: {
       marginBottom: 10,
-      marginTop: 5,
+      marginTop: 20,
+    },
+    RendererSelect: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: 20,
+    },
+    RendererDescription: {
+      fontSize: '90%',
+      color: 'gray',
+    },
+    RendererPreview: {
+      padding: '0px 13px',
+      border: '1px solid gray',
     },
   }),
 );
@@ -312,26 +325,28 @@ const StepConfigRenderer: React.FC<StepConfigRendererProps> = (props: StepConfig
 
   return (
     <div className={className}>
-      排版格式：
-      <FormControl variant="outlined">
-        <Select
-          value={schemeId}
-          onChange={(change: React.ChangeEvent<{ name?: string; value: unknown }>, child: React.ReactNode) => {
-            const newValue = change.target.value as string;
-            if (newValue in renderingSchemes) {
-              setScheme(newValue as RendererId);
-            }
-          }}
-        >
-          {options.map((scheme: RenderingScheme) => (
-            <MenuItem value={scheme.id}>{scheme.name}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <div>
+      <div className={classes.RendererSelect}>
+        排版格式：
+        <FormControl variant="outlined">
+          <Select
+            value={schemeId}
+            onChange={(change: React.ChangeEvent<{ name?: string; value: unknown }>, child: React.ReactNode) => {
+              const newValue = change.target.value as string;
+              if (newValue in renderingSchemes) {
+                setScheme(newValue as RendererId);
+              }
+            }}
+          >
+            {options.map((scheme: RenderingScheme) => (
+              <MenuItem value={scheme.id}>{scheme.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+      <div className={classes.RendererDescription}>
         {scheme.description}
       </div>
-      <div>
+      <div className={classes.RendererPreview}>
         {renderContent(firstLines, scheme, true)}
       </div>
     </div>

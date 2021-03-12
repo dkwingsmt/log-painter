@@ -59,7 +59,7 @@ const schemeStandardBbs: RenderingScheme = {
   previewRenderer: { line: standardLineRenderer },
   finalRenderer: {
     line: (line: RendereeLine , key: number) => (
-      <p
+      <span
         key={key}
       >
         {`[color=${line.playerColor}]<${line.playerName}> `}
@@ -68,7 +68,8 @@ const schemeStandardBbs: RenderingScheme = {
           return newLine.concat([<span key={contentId}>{contentLine}</span>]);
         })}
         {`[/color]`}
-      </p>
+        <br/>
+      </span>
     ),
   },
 };
@@ -80,7 +81,7 @@ const schemeTabRich: RenderingScheme = {
   allowNewPalette: true,
   previewRenderer: {
     body: (content: React.ReactNode) => (
-      <table>
+      <table className="tab-renderer-preview-table">
         {content}
       </table>
     ),
