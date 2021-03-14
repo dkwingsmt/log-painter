@@ -23,6 +23,7 @@
 
 .Body-container {
   margin-top: 10px;
+  padding-top: 64px;
 }
 
 .tab-renderer-preview-table td:first-child {

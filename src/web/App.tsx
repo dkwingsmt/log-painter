@@ -51,7 +51,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ repoUrl }: HeaderProps) => {
   const classes = useHeaderStyles();
   return (
-    <AppBar position='static'>
+    <AppBar position='fixed'>
       <Toolbar>
         <Avatar alt="Logo" src="/android-chrome-512x512.png" className={classes.logo} />
         <Typography variant="h6" className={classes.horizontalFill}>

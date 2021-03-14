@@ -9,6 +9,7 @@ export const useStepperStyles = makeStyles((/*theme: Theme*/) =>
     Body: {
     },
     Container: {
+      paddingTop: 10,
     },
     ControlButton: {
       width: 100,

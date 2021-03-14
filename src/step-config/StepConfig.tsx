@@ -195,7 +195,8 @@ const useConfigStyles = makeStyles((/*theme: Theme*/) =>
     },
     RendererPreview: {
       padding: '0px 13px',
-      border: '1px solid gray',
+      border: '1px solid #000000de',
+      borderRadius: 4,
     },
   }),
 );
