@@ -29,37 +29,19 @@ Object {
       "title": "A",
     },
   ],
-  "playerIds": Array [
-    "name:a",
-    "name:b",
-  ],
-}
-`;
-
-exports[`should work when some players have filled starting colors 1`] = `
-Object {
-  "lines": Array [
+  "players": Array [
     Object {
-      "content": Array [
-        "1",
-        "2",
-      ],
+      "names": Set {
+        "a",
+      },
       "playerId": "name:a",
-      "time": "time1",
-      "title": "A",
     },
     Object {
-      "content": Array [
-        "3",
-      ],
+      "names": Set {
+        "b",
+      },
       "playerId": "name:b",
-      "time": "time2",
-      "title": "B",
     },
-  ],
-  "playerIds": Array [
-    "name:a",
-    "name:b",
   ],
 }
 `;

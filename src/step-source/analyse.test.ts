@@ -2,16 +2,22 @@ import { GroupResult, AnalysedPlayer } from 'step-source';
 import { analyse, AnalyseResult } from './analyse';
 import { Configuration } from './configs';
 
+function setOf(elements: string[]): Set<string> {
+  const result = new Set<string>();
+  for (const element of elements) {
+    result.add(element);
+  }
+  return result;
+}
+
 it('should work for empty config', () => {
   const player1: AnalysedPlayer = {
     playerId: 'name:a',
-    allPlayerIds: ['name:a'],
-    name: 'a',
+    names: setOf(['a']),
   };
   const player2: AnalysedPlayer = {
     playerId: 'name:b',
-    allPlayerIds: ['name:b'],
-    name: 'b',
+    names: setOf(['b']),
   };
   const groupResult: GroupResult = {
     players: [
@@ -39,58 +45,6 @@ it('should work for empty config', () => {
       },
     ]
   };
-  const oldConfig: Configuration = {
-    players: {},
-  };
-  const analyseResult: AnalyseResult = analyse(groupResult, oldConfig);
-  expect(analyseResult).toMatchSnapshot();
-});
-
-it('should work when some players have filled starting colors', () => {
-  const player1: AnalysedPlayer = {
-    playerId: 'name:a',
-    allPlayerIds: ['name:a'],
-    name: 'a',
-  };
-  const player2: AnalysedPlayer = {
-    playerId: 'name:b',
-    allPlayerIds: ['name:b'],
-    name: 'b',
-  };
-  const groupResult: GroupResult = {
-    players: [
-      player1,
-      player2,
-    ],
-    lines: [
-      {
-        time: 'time1',
-        playerId: player1.playerId,
-        content: ['1', '2'],
-        title: 'A',
-      },
-      {
-        time: 'time2',
-        playerId: player2.playerId,
-        content: ['3'],
-        title: 'B',
-      },
-    ]
-  };
-  const oldConfig: Configuration = {
-    players: {
-      'name:a': {
-        enabled: true,
-        displayName: 'A',
-        color: 'black',
-      },
-      'name:d': {
-        enabled: true,
-        displayName: 'D',
-        color: 'silver',
-      },
-    },
-  };
-  const analyseResult: AnalyseResult = analyse(groupResult, oldConfig);
+  const analyseResult: AnalyseResult = analyse(groupResult);
   expect(analyseResult).toMatchSnapshot();
 });

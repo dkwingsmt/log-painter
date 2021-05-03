@@ -36,7 +36,8 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
     return null;
   const lines = logLine.content;
 
-  const withdrawParser = /^.*撤回了一条消息( 重新编辑)?$/;
+  const withdrawParser = /^.*撤回了一条消息/;
+  const withdrawEnglishParser = /^You recalled a message( Re-edit)?$/;
   const withdrawMemberParser = /^.*撤回了成员.*的一条消息$/;
   const withdrawMember2Parser = /^.*撤回了一条成员消息$/;
   const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;
@@ -48,6 +49,7 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
     if ([
       /^ *$/,
       withdrawParser,
+      withdrawEnglishParser,
       withdrawMemberParser,
       withdrawMember2Parser,
       commonFriendsParser,
