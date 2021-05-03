@@ -37,7 +37,7 @@ function removeSystemTextConverter(logLine: ParsedLine | null): ParsedLine | nul
   const lines = logLine.content;
 
   const withdrawParser = /^.*撤回了一条消息/;
-  const withdrawEnglishParser = /^You recalled a message( Re-edit)?$/;
+  const withdrawEnglishParser = /^.* recalled a message( Re-edit)?$/;
   const withdrawMemberParser = /^.*撤回了成员.*的一条消息$/;
   const withdrawMember2Parser = /^.*撤回了一条成员消息$/;
   const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;
@@ -95,7 +95,8 @@ function removeMessageManagerSystemTextConverter(logLine: ParsedLine | null): Pa
   const lines = logLine.content;
 
   const dateParser = /^ \d{4}-\d{2}-\d{2}$/;
-  const withdrawParser = new RegExp(`^${regTime.source}.*撤回了一条消息$`);
+  const withdrawParser = new RegExp(`^${regTime.source}.*撤回了一条消息`);
+  const withdrawEnglishParser = new RegExp(`^${regTime.source}.* recalled a message( Re-edit)?`);
   const withdrawMemberParser = new RegExp(`^${regTime.source}.*撤回了成员.*的一条消息$`);
   const withdrawMember2Parser = new RegExp(`^${regTime.source}.*撤回了一条成员消息$`);
   // const commonFriendsParser = /^你和.*有\d+个共同好友，点击添加好友。$/;

@@ -1,6 +1,5 @@
 import { GroupResult, AnalysedPlayer } from 'step-source';
 import { analyse, AnalyseResult } from './analyse';
-import { Configuration } from './configs';
 
 function setOf(elements: string[]): Set<string> {
   const result = new Set<string>();
