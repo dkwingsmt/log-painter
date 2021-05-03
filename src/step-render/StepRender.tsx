@@ -68,11 +68,13 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
     setSnackbarControl({ body, open: true });
   };
   const scheme = renderingSchemes[config.general.rendererScheme];
-  const lines = args.lines.map((line: AnalysedLine) => ({
-    content: line.content,
-    playerName: playersConfig[line.playerId]?.displayName ?? '错误',
-    playerColor: playersConfig[line.playerId]?.color ?? 'black',
-  }));
+  const lines = args.lines
+    .filter((line: AnalysedLine) => playersConfig[line.playerId]?.enabled ?? true)
+    .map((line: AnalysedLine) => ({
+      content: line.content,
+      playerName: playersConfig[line.playerId]?.displayName ?? '错误',
+      playerColor: playersConfig[line.playerId]?.color ?? 'black',
+    }));
 
   const [clipboard] = useState<ClipboardJS>((): ClipboardJS => {
     const result: ClipboardJS = new ClipboardJS('#clipboard-button', {
