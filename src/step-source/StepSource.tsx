@@ -42,7 +42,7 @@ export const StepSource: React.FC<StepSourceProps> = (props: StepSourceProps) =>
     return null;
 
   return (
-    <Grid container justifyContent="flex-end" className={stepperClasses.Container}>
+    <Grid container className={stepperClasses.Container}>
       <Grid item xs={12} className={stepperClasses.Body}>
         <TextField
           id="outlined-basic"
@@ -59,7 +59,7 @@ export const StepSource: React.FC<StepSourceProps> = (props: StepSourceProps) =>
           value={text}
         />
       </Grid>
-      <Grid item xs={12} className={stepperClasses.Control}>
+      <Grid container item xs={12} justifyContent="flex-end" className={stepperClasses.Control}>
         <Button
           variant="contained"
           color="primary"
