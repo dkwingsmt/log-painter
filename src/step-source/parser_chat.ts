@@ -21,6 +21,7 @@ export interface ParseResult {
 interface ParsedHeader {
   player: ParsedPlayer;
   time?: string;
+  content?: string;
 }
 
 type HeaderParser = (line: string) => ParsedHeader | null;
@@ -245,6 +246,52 @@ const copyFromMobile: LogConfig = {
   },
 };
 
+// Reparse log with angular brackes
+// E.g. "<小明> 内容内容内容内容"
+const reparseAngularBracket: LogConfig = {
+  headerParser: (line: string): ParsedHeader | null => {
+    const regHeader = /^<(.+)> (.+)$/;
+    const matches = regHeader.exec(line);
+    if (!matches)
+      return null;
+    const [_all, name, content] = matches;
+    return {
+      player: {
+        name,
+      },
+      content,
+    };
+  },
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
+    return flow(
+      defaultConverter,
+    )(logLine);
+  },
+};
+
+// Reparse log with bold brackes
+// E.g. "【小明】内容内容内容内容"
+const reparseBoldBracket: LogConfig = {
+  headerParser: (line: string): ParsedHeader | null => {
+    const regHeader = /^【(.+)】(.+)$/;
+    const matches = regHeader.exec(line);
+    if (!matches)
+      return null;
+    const [_all, name, content] = matches;
+    return {
+      player: {
+        name,
+      },
+      content,
+    };
+  },
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
+    return flow(
+      defaultConverter,
+    )(logLine);
+  },
+};
+
 export function parseChat(data: string): ParseResult {
   const logLines: ParsedLine[] = [];
   let firstLogConfig: LogConfig | undefined = undefined;
@@ -257,6 +304,8 @@ export function parseChat(data: string): ParseResult {
         copyFromMobile,
         exportFromLog,
         copyFromChat,
+        reparseAngularBracket,
+        reparseBoldBracket,
       ]) {
         const result = logConfig.headerParser(line);
         if (result) {
@@ -267,9 +316,11 @@ export function parseChat(data: string): ParseResult {
       return null;
     })();
     if (parsedHeader) {
+      const { player, time, content } = parsedHeader;
       logLines.push({
-        ...parsedHeader,
-        content: [],
+        player,
+        time,
+        content: content ? [content] : [],
       });
     } else {
       if (firstLogConfig) {

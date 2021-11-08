@@ -364,3 +364,31 @@ a dark ideation  23:50:40${" "}
     ).toMatchSnapshot();
   });
 });
+
+describe('reparse log with angular brackets', () => {
+  it("basic", () => {
+    const text = `
+<库> 1
+2
+
+<欧> 3
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+});
+
+describe('reparse log with bold brackets', () => {
+  it("basic", () => {
+    const text = `
+【库】1
+2
+
+【欧】3
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+});

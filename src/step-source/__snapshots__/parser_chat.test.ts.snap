@@ -675,3 +675,81 @@ Object {
   ],
 }
 `;
+
+exports[`reparse log with angular bracket basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+        "2",
+      ],
+      "player": Object {
+        "name": "库",
+      },
+      "time": undefined,
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "欧",
+      },
+      "time": undefined,
+    },
+  ],
+}
+`;
+
+exports[`reparse log with angular brackets basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+        "2",
+      ],
+      "player": Object {
+        "name": "库",
+      },
+      "time": undefined,
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "欧",
+      },
+      "time": undefined,
+    },
+  ],
+}
+`;
+
+exports[`reparse log with bold brackets basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+        "2",
+      ],
+      "player": Object {
+        "name": "库",
+      },
+      "time": undefined,
+    },
+    Object {
+      "content": Array [
+        "3",
+      ],
+      "player": Object {
+        "name": "欧",
+      },
+      "time": undefined,
+    },
+  ],
+}
+`;
