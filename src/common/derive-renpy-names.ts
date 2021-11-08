@@ -98,7 +98,7 @@ function sanitizeIdentifier(name: string): string {
 }
 
 export function deriveRenpyNames(names: string[]): string[] {
-  console.log(JSON.stringify(names));
+  // console.log(JSON.stringify(names));
   let sourceDedupId = 0;
   const sourceDedupTable: Record<string, boolean> = {};
   // Map from "key" to "name"
@@ -112,7 +112,7 @@ export function deriveRenpyNames(names: string[]): string[] {
       sourceDedupTable[name] = true;
     }
   }
-  console.log(JSON.stringify(sourceDeduped));
+  // console.log(JSON.stringify(sourceDeduped));
 
   // Map from "key" to "result"
   const finished: Record<string, string> = {};
@@ -145,8 +145,8 @@ export function deriveRenpyNames(names: string[]): string[] {
     }
   }
   const longest = max(Object.values(remaining).map((chars) => chars.length)) ?? 0;
-  console.log('## Sanitized');
-  console.log(remaining);
+  // console.log('## Sanitized');
+  // console.log(remaining);
 
   // Map from "key" to "chars"
   let nextRemaining: Record<string, string[]> = {};
@@ -187,6 +187,6 @@ export function deriveRenpyNames(names: string[]): string[] {
     console.error('Algorithm error', names);
     throw Error('Algorithm error');
   }
-  console.log(JSON.stringify(finished));
+  // console.log(JSON.stringify(finished));
   return sourceDeduped.map((key) => finished[key]);
 }
