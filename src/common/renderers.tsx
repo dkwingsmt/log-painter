@@ -4,6 +4,7 @@ import escapeHtml from 'escape-html';
 import join from 'lodash/join';
 import uniqBy from 'lodash/uniqBy';
 import { deriveRenpyNames } from './derive-renpy-names';
+import { repeat } from 'lodash';
 
 export type RendererId =
     'standard-rich'
@@ -79,7 +80,7 @@ const htmlFinalLineRenderer = (leftDiv: string, rightDiv: string) => {
           `<p style="color: ${line.playerColor}">`,
           escapeHtml(`${leftDiv}${line.playerName}${rightDiv}`),
           ...line.content.map((contentLine: string, contentId: number) => {
-            const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>];
+            const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>, '<br />'];
             return newLine.concat([<span key={contentId}>{escapeHtml(contentLine)}</span>]);
           }),
           `</p>`,
@@ -217,9 +218,10 @@ function renpyRenderer(lines: RendereeLine[]): React.ReactNode {
   });
   const contents = lines.map((line: RendereeLine) => {
     const renpyName = nameMap[line.playerName];
+    const nameLengthSpaces = repeat(' ', renpyName.length);
     const body = line.content.map((contentLine: string) => {
       return escapeString(contentLine);
-    }).join('" +\\n    "');
+    }).join(`" +\n     ${nameLengthSpaces}"`);
     return `    ${renpyName} "${body}"`;
   });
   return (
