@@ -120,6 +120,33 @@ Object {
 }
 `;
 
+exports[`copied from chat datetime with day-of-week 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "Qkp",
+        "title": undefined,
+      },
+      "time": "2021/8/20 星期五 下午 2:04:59",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "诺里斯.加迈尔",
+        "title": undefined,
+      },
+      "time": "2021/8/20 星期五 下午 2:07:49",
+    },
+  ],
+}
+`;
+
 exports[`copied from chat instant withdraw 1`] = `
 Object {
   "logLines": Array [
@@ -217,6 +244,33 @@ Object {
         "title": "PL",
       },
       "time": "3/4/2020 6:01:02 PM",
+    },
+  ],
+}
+`;
+
+exports[`copied from chat simplest datetime with day-of-week 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "Qkp",
+        "title": undefined,
+      },
+      "time": "下午 3:32:47",
+    },
+    Object {
+      "content": Array [
+        "2",
+      ],
+      "player": Object {
+        "name": "诺里斯.加迈尔",
+        "title": undefined,
+      },
+      "time": "下午 3:34:00",
     },
   ],
 }

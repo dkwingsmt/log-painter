@@ -141,7 +141,7 @@ export const StepRender: React.FC<StepRenderProps> = (props: StepRenderProps) =>
           {renderContent(lines, scheme, false)}
         </div>
       </Grid>
-      <Grid item xs={12} justify="flex-end" className={stepperClasses.Control}>
+      <Grid item xs={12} justifyContent="flex-end" className={stepperClasses.Control}>
         <Button
           variant="outlined"
           color="secondary"

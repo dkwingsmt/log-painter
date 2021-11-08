@@ -123,7 +123,6 @@ describe('copied from chat', () => {
     ).toMatchSnapshot();
   });
 
-
   it("without title", () => {
     const text = `
 丧 丧 熊 9:59:54 PM
@@ -218,6 +217,32 @@ Paul~K（写不完了...） 10:00:04 PM
 
 爬行类化石 12:07:49 AM
 3
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+
+  it("datetime with day-of-week", () => {
+    const text = `
+Qkp 2021/8/20 星期五 下午 2:04:59
+1
+
+诺里斯.加迈尔 2021/8/20 星期五 下午 2:07:49
+2
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+
+  it("simplest datetime with day-of-week", () => {
+    const text = `
+Qkp 下午 3:32:47
+1
+
+诺里斯.加迈尔 下午 3:34:00
+2
     `;
     expect(
       parseChat(text)

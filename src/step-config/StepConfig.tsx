@@ -479,7 +479,7 @@ export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) =>
           paletteId={generalConfig.palette}
         />
       </Grid>
-      <Grid item xs={12} justify="flex-end" className={stepperClasses.Control}>
+      <Grid item xs={12} justifyContent="flex-end" className={stepperClasses.Control}>
         <Button
           variant="outlined"
           color="secondary"

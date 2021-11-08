@@ -4,7 +4,7 @@ import preval from 'preval.macro';
 
 import GithubIcon from 'simple-icons/icons/github';
 
-import { makeStyles, createStyles, createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles, createStyles, createTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
@@ -100,7 +100,7 @@ const Main: React.FC<MainProps> = (props: MainProps) => {
   );
 };
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#795548',

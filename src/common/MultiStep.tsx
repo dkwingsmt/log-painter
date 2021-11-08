@@ -54,7 +54,7 @@ const MultiStep = <O1, O2, Config>(
   }
 
   return (
-    <Grid container xs={12}>
+    <Grid item xs={12}>
       <Step1
         key={`${session}-1`}
         show={initStates.length === 0}

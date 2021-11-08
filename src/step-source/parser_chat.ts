@@ -173,7 +173,7 @@ const exportFromLog: LogConfig = {
 // E.g. "【煤油】丧 丧 熊 9:59:54 PM"
 const copyFromChat: LogConfig = {
   headerParser: (line: string): ParsedHeader | null => {
-    const regDateTime = new RegExp(`(?:\\d{1,4}\\/\\d{1,2}\\/\\d{1,4} )?${regTime.source}`);
+    const regDateTime = new RegExp(`(?:\\d{1,4}\\/\\d{1,2}\\/\\d{1,4} (?:星期. )?)?${regTime.source}`);
     const regHeader = new RegExp(`^${regTitle.source}(.*?) (${regDateTime.source})$`);
     const matches = regHeader.exec(line);
     if (!matches)
