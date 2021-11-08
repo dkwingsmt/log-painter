@@ -365,6 +365,24 @@ a dark ideation  23:50:40${" "}
   });
 });
 
+describe('shiki\'s log record', () => {
+  it("basic", () => {
+    const text = `
+暗(12345) 2021-11-08 04:07:37
+1
+
+暗(12345) 2021-11-08 04:07:39
+.rd
+
+嵩(7890) 2021-11-08 04:07:39
+暗骰出了【D100=50】！
+    `;
+    expect(
+      parseChat(text)
+    ).toMatchSnapshot();
+  });
+});
+
 describe('reparse log with angular brackets', () => {
   it("basic", () => {
     const text = `

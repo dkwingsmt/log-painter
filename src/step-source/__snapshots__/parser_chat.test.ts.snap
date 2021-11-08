@@ -676,32 +676,6 @@ Object {
 }
 `;
 
-exports[`reparse log with angular bracket basic 1`] = `
-Object {
-  "logLines": Array [
-    Object {
-      "content": Array [
-        "1",
-        "2",
-      ],
-      "player": Object {
-        "name": "库",
-      },
-      "time": undefined,
-    },
-    Object {
-      "content": Array [
-        "3",
-      ],
-      "player": Object {
-        "name": "欧",
-      },
-      "time": undefined,
-    },
-  ],
-}
-`;
-
 exports[`reparse log with angular brackets basic 1`] = `
 Object {
   "logLines": Array [
@@ -749,6 +723,43 @@ Object {
         "name": "欧",
       },
       "time": undefined,
+    },
+  ],
+}
+`;
+
+exports[`shiki's log record basic 1`] = `
+Object {
+  "logLines": Array [
+    Object {
+      "content": Array [
+        "1",
+      ],
+      "player": Object {
+        "name": "暗",
+        "number": "12345",
+      },
+      "time": "2021-11-08 04:07:37",
+    },
+    Object {
+      "content": Array [
+        ".rd",
+      ],
+      "player": Object {
+        "name": "暗",
+        "number": "12345",
+      },
+      "time": "2021-11-08 04:07:39",
+    },
+    Object {
+      "content": Array [
+        "暗骰出了【D100=50】！",
+      ],
+      "player": Object {
+        "name": "嵩",
+        "number": "7890",
+      },
+      "time": "2021-11-08 04:07:39",
     },
   ],
 }

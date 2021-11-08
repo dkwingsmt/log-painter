@@ -246,6 +246,30 @@ const copyFromMobile: LogConfig = {
   },
 };
 
+// 溯洄骰的Log记录器
+// E.g. "名字(123456) 2021-11-08 04:07:37"
+const shikiLogRecord: LogConfig = {
+  headerParser: (line: string): ParsedHeader | null => {
+    const regHeader = new RegExp(`^(.*?)(${regNumber.source}) (\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})$`);
+    const matches = regHeader.exec(line);
+    if (!matches)
+      return null;
+    const [_all, name, number, time] = matches;
+    return {
+      player: {
+        name,
+        number: trimNumber(number),
+      },
+      time,
+    };
+  },
+  logLineConverter: (logLine: ParsedLine): ParsedLine | null => {
+    return flow(
+      defaultConverter,
+    )(logLine);
+  },
+};
+
 // Reparse log with angular brackes
 // E.g. "<小明> 内容内容内容内容"
 const reparseAngularBracket: LogConfig = {
@@ -300,6 +324,7 @@ export function parseChat(data: string): ParseResult {
       if (firstLogConfig)
         return firstLogConfig.headerParser(line);
       for (const logConfig of [
+        shikiLogRecord,
         copyFromMessageManager,
         copyFromMobile,
         exportFromLog,
