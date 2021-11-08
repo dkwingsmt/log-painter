@@ -24,7 +24,7 @@ function isValidStart(code: number): boolean {
       || within(code, 0xF900, 0xFAFF)   // CJK
       || within(code, 0x20000, 0x2CEAF) // CJK
       || within(code, 0x2F800, 0x2FA1F) // CJK
-      ;
+  ;
 }
 
 function isValidContinue(code: number): boolean {
@@ -33,7 +33,7 @@ function isValidContinue(code: number): boolean {
       || within(code, 0x0300, 0x36F)   // Combining Diacritical Marks
       || code == 0x005F   // Low line: connector punc
       || code == 0x00B7   // Middle dot
-      ;
+  ;
 }
 
 const keywords: string[] = [
@@ -87,18 +87,19 @@ function isKeyword(s: string): boolean {
 }
 
 function sanitizeIdentifier(name: string): string {
-  let metFirst: boolean = false;
+  let metFirst = false;
   return name.split('').filter((c: string): boolean => {
     if (!metFirst) {
-      return metFirst = isValidStart(c.codePointAt(0)!);
+      return metFirst = isValidStart(c.codePointAt(0) ?? 0);
     } else {
-      return isValidContinue(c.codePointAt(0)!);
+      return isValidContinue(c.codePointAt(0) ?? 0);
     }
   }).join('');
 }
 
 export function deriveRenpyNames(names: string[]): string[] {
-  let sourceDedupId: number = 0;
+  console.log(JSON.stringify(names));
+  let sourceDedupId = 0;
   const sourceDedupTable: Record<string, boolean> = {};
   // Map from "key" to "name"
   const sourceDeduped: string[] = [];
@@ -131,7 +132,9 @@ export function deriveRenpyNames(names: string[]): string[] {
     } else {
       const sanitized = sanitizeIdentifier(name).split('');
       const existingKey = entireDedup[sanitized.join('')];
-      if (existingKey != null) {
+      if (sanitized.length == 0) {
+        finished[name] = nextDedupName();
+      } else if (existingKey != null) {
         finished[name] = nextDedupName();
         finished[existingKey] = nextDedupName();
         delete remaining[existingKey];
@@ -142,8 +145,8 @@ export function deriveRenpyNames(names: string[]): string[] {
     }
   }
   const longest = max(Object.values(remaining).map((chars) => chars.length)) ?? 0;
-  // console.log('## Sanitized');
-  // console.log(remaining);
+  console.log('## Sanitized');
+  console.log(remaining);
 
   // Map from "key" to "chars"
   let nextRemaining: Record<string, string[]> = {};

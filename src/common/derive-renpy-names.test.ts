@@ -35,4 +35,14 @@ describe('deriveRenpyNames', () => {
     expect(deriveRenpyNames(['张三', '李·四']))
     .toEqual(['张', '李']);
   });
+
+  it("Chinese2", () => {
+    expect(deriveRenpyNames(['余灰', 'Q', '余灰']))
+    .toEqual(['张', '李']);
+  });
+
+  it("spaces", () => {
+    expect(deriveRenpyNames(['                                  ']))
+    .toEqual(['_C1']);
+  });
 });

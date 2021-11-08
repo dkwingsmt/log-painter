@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import escapeHtml from 'escape-html';
 import join from 'lodash/join';
+import uniqBy from 'lodash/uniqBy';
+import { deriveRenpyNames } from './derive-renpy-names';
 
 export type RendererId =
     'standard-rich'
@@ -10,7 +12,8 @@ export type RendererId =
   | 'bold-html'
   | 'standard-bbs'
   | 'bold-bbs'
-  | 'tab-rich';
+  | 'tab-rich'
+  | 'renpy';
 
 export interface RendereeLine {
   content: string[];
@@ -18,11 +21,7 @@ export interface RendereeLine {
   playerColor: string;
 }
 
-interface RenderHandler {
-  body?: (content: React.ReactNode) => React.ReactNode;
-  line: (line: RendereeLine, key: number) => React.ReactNode;
-}
-
+type RenderHandler = (lines: RendereeLine[]) => React.ReactNode;
 export interface RenderingScheme {
   id: RendererId;
   name: string;
@@ -33,8 +32,8 @@ export interface RenderingScheme {
 }
 
 const standardLineRenderer = (leftDiv: string, rightDiv: string) => {
-  function StandardLine(line: RendereeLine, key: number): React.ReactNode {
-    return (
+  function StandardLine(lines: RendereeLine[]): React.ReactNode {
+    return lines.map((line: RendereeLine, key: number) => (
       <p
         key={key}
         style={{
@@ -47,14 +46,14 @@ const standardLineRenderer = (leftDiv: string, rightDiv: string) => {
           return newLine.concat([<span key={contentId}>{contentLine}</span>]);
         })}
       </p>
-    );
+    ));
   }
   return StandardLine;
 };
 
 const bbsFinalLineRenderer = (leftDiv: string, rightDiv: string) => {
-  function BbsFinalLine(line: RendereeLine, key: number): React.ReactNode {
-    return (
+  function BbsFinalLine(lines: RendereeLine[]): React.ReactNode {
+    return lines.map((line: RendereeLine, key: number) => (
       <span
         key={key}
       >
@@ -66,14 +65,14 @@ const bbsFinalLineRenderer = (leftDiv: string, rightDiv: string) => {
         {`[/color]`}
         <br/>
       </span>
-    );
+    ));
   }
   return BbsFinalLine;
 };
 
 const htmlFinalLineRenderer = (leftDiv: string, rightDiv: string) => {
-  function HtmlFinalLine(line: RendereeLine, key: number): React.ReactNode {
-    return (
+  function HtmlFinalLine(lines: RendereeLine[]): React.ReactNode {
+    return lines.map((line: RendereeLine, key: number) => (
       <span
         key={key}
       > {[
@@ -87,7 +86,7 @@ const htmlFinalLineRenderer = (leftDiv: string, rightDiv: string) => {
         ]}
         <br/>
       </span>
-    );
+    ));
   }
   return HtmlFinalLine;
 };
@@ -97,8 +96,8 @@ const schemeAngularBracketRich: RenderingScheme = {
   name: '富文本，尖括号分割',
   description: '最常见的格式。输出富文本，可直接复制粘贴到Word里。预览如下：',
   allowNewPalette: true,
-  previewRenderer: { line: standardLineRenderer('<', '> ') },
-  finalRenderer: { line: standardLineRenderer('<', '> ') },
+  previewRenderer: standardLineRenderer('<', '> '),
+  finalRenderer: standardLineRenderer('<', '> '),
 };
 
 const schemeBoldBracketRich: RenderingScheme = {
@@ -106,8 +105,8 @@ const schemeBoldBracketRich: RenderingScheme = {
   name: '富文本，粗括号分割',
   description: '常见格式。输出富文本，可直接复制粘贴到Word里。预览如下：',
   allowNewPalette: true,
-  previewRenderer: { line: standardLineRenderer('【', '】') },
-  finalRenderer: { line: standardLineRenderer('【', '】') },
+  previewRenderer: standardLineRenderer('【', '】'),
+  finalRenderer: standardLineRenderer('【', '】'),
 };
 
 const schemeAngularBracketBbs: RenderingScheme = {
@@ -115,8 +114,8 @@ const schemeAngularBracketBbs: RenderingScheme = {
   name: 'BBS代码，尖括号分割',
   description: '最常见的格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
   allowNewPalette: false,
-  previewRenderer: { line: standardLineRenderer('<', '> ') },
-  finalRenderer: { line: bbsFinalLineRenderer('<', '> ') },
+  previewRenderer: standardLineRenderer('<', '> '),
+  finalRenderer: bbsFinalLineRenderer('<', '> '),
 };
 
 const schemeBoldBracketBbs: RenderingScheme = {
@@ -124,8 +123,8 @@ const schemeBoldBracketBbs: RenderingScheme = {
   name: 'BBS代码，粗括号分割',
   description: '常见格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
   allowNewPalette: false,
-  previewRenderer: { line: standardLineRenderer('【', '】') },
-  finalRenderer: { line: bbsFinalLineRenderer('【', '】') },
+  previewRenderer: standardLineRenderer('【', '】'),
+  finalRenderer: bbsFinalLineRenderer('【', '】'),
 };
 
 const schemeAngularBracketHtml: RenderingScheme = {
@@ -133,8 +132,8 @@ const schemeAngularBracketHtml: RenderingScheme = {
   name: 'HTML，尖括号分割',
   description: '最常见的格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
   allowNewPalette: true,
-  previewRenderer: { line: standardLineRenderer('<', '> ') },
-  finalRenderer: { line: htmlFinalLineRenderer('<', '> ') },
+  previewRenderer: standardLineRenderer('<', '> '),
+  finalRenderer: htmlFinalLineRenderer('<', '> '),
 };
 
 const schemeBoldBracketHtml: RenderingScheme = {
@@ -142,8 +141,8 @@ const schemeBoldBracketHtml: RenderingScheme = {
   name: 'HTML，粗括号分割',
   description: '常见格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
   allowNewPalette: true,
-  previewRenderer: { line: standardLineRenderer('【', '】') },
-  finalRenderer: { line: htmlFinalLineRenderer('【', '】') },
+  previewRenderer: standardLineRenderer('【', '】'),
+  finalRenderer: htmlFinalLineRenderer('【', '】'),
 };
 
 const schemeTabRich: RenderingScheme = {
@@ -151,13 +150,8 @@ const schemeTabRich: RenderingScheme = {
   name: '【特殊】Tab分割',
   description: '以Tab分割各元素，保证垂直对齐的特殊格式。输出富文本，可直接复制粘贴到Word等软件中。大致效果预览如下（最终效果取决于文档设定）：',
   allowNewPalette: true,
-  previewRenderer: {
-    body: (content: React.ReactNode) => (
-      <table className="tab-renderer-preview-table">
-        {content}
-      </table>
-    ),
-    line: (line: RendereeLine, key: number) => (
+  previewRenderer: (lines: RendereeLine[]): React.ReactNode => {
+    const renderedLines = lines.map((line: RendereeLine, key: number) => (
       <tr
         key={key}
         style={{
@@ -174,10 +168,15 @@ const schemeTabRich: RenderingScheme = {
           })}
         </td>
       </tr>
-    ),
+    ));
+    return (
+      <table className="tab-renderer-preview-table">
+        {renderedLines}
+      </table>
+    );
   },
-  finalRenderer: {
-    line: (line: RendereeLine, key: number) => (
+  finalRenderer: (lines: RendereeLine[]): React.ReactNode => {
+    return lines.map((line: RendereeLine, key: number) => (
       <pre
         key={key}
         style={{ color: line.playerColor }}
@@ -185,9 +184,65 @@ const schemeTabRich: RenderingScheme = {
           __html: `&#9;${escapeHtml(line.playerName)}&#9;${join(line.content.map(escapeHtml), '&#11;')}`
         }}
       />
-    ),
+    ));
   },
 };
+
+function escapeString(s: string): string {
+  return s.replaceAll(/[\\"]/g, (s: string) => `\\${s}`);
+}
+
+function interlaceNewline(lines: ReactNode[], newlines: number, start: number): ReactNode {
+  const result: ReactNode[] = [];
+  lines.forEach((line: ReactNode, index: number) => {
+    if (index !== 0) {
+      for (let i = 0; i < newlines; i++)
+        result.push(<br key={start + index * newlines + i} />);
+    }
+    result.push(line);
+  });
+  return result;
+}
+
+function renpyRenderer(lines: RendereeLine[]): React.ReactNode {
+  const profiles = uniqBy(lines, (line: RendereeLine) => line.playerName);
+  const renpyNames = deriveRenpyNames(profiles.map((profile: RendereeLine) => profile.playerName));
+  const nameMap: Record<string, string> = {};
+  renpyNames.forEach((renpyName: string, index: number) => {
+    nameMap[profiles[index].playerName] = renpyName;
+  });
+
+  const header = profiles.map((line: RendereeLine, index: number) => {
+    return `define ${renpyNames[index]} = Character('${escapeString(line.playerName)}', color="${line.playerColor}")`;
+  });
+  const contents = lines.map((line: RendereeLine) => {
+    const renpyName = nameMap[line.playerName];
+    const body = line.content.map((contentLine: string) => {
+      return escapeString(contentLine);
+    }).join('" +\\n    "');
+    return `    ${renpyName} "${body}"`;
+  });
+  return (
+    <pre>
+      {interlaceNewline(header, 1, 0)}
+      <br key={header.length} />
+      <br key={header.length + 1} />
+      label start:
+      <br key={header.length + 2} />
+      {interlaceNewline(contents, 2, header.length + 3)}
+    </pre>
+  );
+}
+
+const schemeRenpy: RenderingScheme = {
+  id: 'renpy',
+  name: '【特殊】Renpy',
+  description: '输出可以直接导入进Renpy的格式：',
+  allowNewPalette: true,
+  previewRenderer: renpyRenderer,
+  finalRenderer: renpyRenderer,
+};
+
 
 export const renderingSchemes: Record<RendererId, RenderingScheme> = {
   'standard-rich': schemeAngularBracketRich,
@@ -197,13 +252,10 @@ export const renderingSchemes: Record<RendererId, RenderingScheme> = {
   'standard-html': schemeAngularBracketHtml,
   'bold-html': schemeBoldBracketHtml,
   'tab-rich': schemeTabRich,
+  'renpy': schemeRenpy,
 };
 
 export function renderContent(lines: RendereeLine[], scheme: RenderingScheme, preview: boolean) : React.ReactNode {
   const renderer = preview ? scheme.previewRenderer : scheme.finalRenderer;
-  const body = lines.map(renderer.line);
-  if (renderer.body != null) {
-    return renderer.body(body);
-  }
-  return body;
+  return renderer(lines);
 }
