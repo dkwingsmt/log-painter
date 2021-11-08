@@ -53,7 +53,7 @@ const schemeStandardRich: RenderingScheme = {
 
 const schemeStandardBbs: RenderingScheme = {
   id: 'standard-bbs',
-  name: '标准尖括号（BBS代码）',
+  name: '标准尖括号（BBS代码）',
   description: '最常见的格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
   allowNewPalette: false,
   previewRenderer: { line: standardLineRenderer },
@@ -123,7 +123,7 @@ export const renderingSchemes: Record<RendererId, RenderingScheme> = {
   'tab-rich': schemeTabRich,
 };
 
-export function renderContent(lines: RendereeLine[], scheme: RenderingScheme, preview: boolean) {
+export function renderContent(lines: RendereeLine[], scheme: RenderingScheme, preview: boolean) : React.ReactNode {
   const renderer = preview ? scheme.previewRenderer : scheme.finalRenderer;
   const body = lines.map(renderer.line);
   if (renderer.body != null) {

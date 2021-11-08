@@ -101,4 +101,4 @@ export const colorPalettes: Record<ColorPalette, PaletteInfo> = {
     description: '“BBS色板”包含18个常见于BBS的颜色，是传统的配色方案，缺点是色彩间的区分度及与背景的对比度无法保证。',
     contents: once(() => initializeColors(rawBbsColors)),
   },
-}
+};

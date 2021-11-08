@@ -17,7 +17,7 @@ export interface AnalysedPlayer {
 export interface GroupResult {
   players: AnalysedPlayer[];
   lines: AnalysedLine[];
-};
+}
 
 function getPlayerId(player: ParsedPlayer): string {
   if (player.number)

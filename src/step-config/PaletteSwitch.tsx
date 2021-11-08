@@ -1,13 +1,9 @@
-import React, { useState, useRef, useContext } from 'react';
+import React from 'react';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
@@ -16,8 +12,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import {
   ColorPalette,
@@ -79,16 +73,16 @@ export const PaletteSwitch: React.FC<PaletteSwitchProps> = (props: PaletteSwitch
   const handleOpenDialog = () => {
     setDialogOpen(true);
     setDialogSelect(value);
-  }
+  };
 
   const handleConfirmDialog = () => {
     setDialogOpen(false);
     setValue(dialogSelect);
-  }
+  };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
-  }
+  };
 
   return (
     <div className={className}>
@@ -149,4 +143,4 @@ export const PaletteSwitch: React.FC<PaletteSwitchProps> = (props: PaletteSwitch
       </Dialog>
     </div>
   );
-}
+};

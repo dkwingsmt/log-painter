@@ -28,7 +28,6 @@ import {
   PlayerConfig,
   GeneralConfig,
   ColorPalette,
-  PaletteInfo,
   colorPalettes,
 } from 'common';
 import {
@@ -38,7 +37,7 @@ import {
 } from 'step-source';
 import { DescribedColor } from 'common/colors';
 import { PaletteSwitch } from './PaletteSwitch';
-import { renderContent, RendererId, RenderingScheme, renderingSchemes, RendereeLine } from 'common/renderers';
+import { renderContent, RendererId, RenderingScheme, renderingSchemes } from 'common/renderers';
 import { defaultGeneralConfig } from 'common/configs';
 
 export interface StepConfigResult {
@@ -67,7 +66,7 @@ const useStyles = makeStyles(() =>
 );
 
 const PlayerConfigDashboard: React.FC<PlayerConfigProps> = (props: PlayerConfigProps) => {
-  const { enabled, setEnabled, name, setName, color, setColor, palette } = props;
+  const { enabled, setEnabled, setName, color, setColor, palette } = props;
   const classes = useStyles();
   return (
     <Grid item xs={6}>
@@ -304,8 +303,6 @@ function getFirstLines(lines: AnalysedLine[]): AnalysedLine[] {
   return result;
 }
 
-type GetFirstLines = (lines: AnalysedLine[]) => AnalysedLine[];
-
 const StepConfigRenderer: React.FC<StepConfigRendererProps> = (props: StepConfigRendererProps) => {
   const { players, schemeId, setScheme, className } = props;
   const memoizedGetFirstLines = useRef(memoize(getFirstLines)).current;
@@ -330,7 +327,7 @@ const StepConfigRenderer: React.FC<StepConfigRendererProps> = (props: StepConfig
         <FormControl variant="outlined">
           <Select
             value={schemeId}
-            onChange={(change: React.ChangeEvent<{ name?: string; value: unknown }>, child: React.ReactNode) => {
+            onChange={(change: React.ChangeEvent<{ name?: string; value: unknown }>) => {
               const newValue = change.target.value as string;
               if (newValue in renderingSchemes) {
                 setScheme(newValue as RendererId);
@@ -338,7 +335,7 @@ const StepConfigRenderer: React.FC<StepConfigRendererProps> = (props: StepConfig
             }}
           >
             {options.map((scheme: RenderingScheme) => (
-              <MenuItem value={scheme.id}>{scheme.name}</MenuItem>
+              <MenuItem key={scheme.id} value={scheme.id}>{scheme.name}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -351,7 +348,7 @@ const StepConfigRenderer: React.FC<StepConfigRendererProps> = (props: StepConfig
       </div>
     </div>
   );
-}
+};
 
 type StepConfigProps = MiddleStepProps<StepSourceResult, StepConfigResult, Configuration>;
 
@@ -368,7 +365,7 @@ function initializePlayers(
   playerConfigs: Record<string, PlayerConfig>,
   colors: Record<string, DescribedColor>,
 ): Record<string, ConfigPlayer> {
-  const availableColors = {...colors};
+  const availableColors = { ...colors };
   const result = analysePlayers.map((source: AnalysedPlayer) => {
     const existingConfig = playerConfigs[source.playerId];
     const sourceNames = reverse(Array.from(source.names));
@@ -419,7 +416,7 @@ function postProcess(lines: AnalysedLine[], generalConfig: GeneralConfig): Analy
     }));
   }
   return resultLines;
-};
+}
 
 export const StepConfig: React.FC<StepConfigProps> = (props: StepConfigProps) => {
   const { args, onPrevStep, onNextStep } = props;

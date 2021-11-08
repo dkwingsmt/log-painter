@@ -109,6 +109,7 @@ function removeMessageManagerSystemTextConverter(logLine: ParsedLine | null): Pa
       /^ *$/,
       dateParser,
       withdrawParser,
+      withdrawEnglishParser,
       withdrawMemberParser,
       withdrawMember2Parser,
       joinMemberParser,

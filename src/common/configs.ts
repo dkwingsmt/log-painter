@@ -31,15 +31,16 @@ export interface PlayerConfig {
 export interface Configuration {
   players: Record<string, PlayerConfig>;
   general: GeneralConfig;
+  [x: string]: unknown;
 }
 
-export const sanitizeConfig = (value: {} | undefined): Configuration => {
-  const nonNullValue = (value ?? {}) as Record<string, {}>;
+export const sanitizeConfig = (value: Record<string, unknown> | undefined): Configuration => {
+  const nonNullValue = (value ?? {}) as Record<string, Record<string, unknown>>;
   const result = {
     players: (nonNullValue['players'] ?? {}) as Record<string, PlayerConfig>,
     general: {
       ...defaultGeneralConfig,
-      ...nonNullValue['general'] as GeneralConfig
+      ...nonNullValue['general'] as unknown as GeneralConfig,
     },
   };
   if (!(result.general.palette in colorPalettes)) {
@@ -58,15 +59,15 @@ export const sanitizeConfig = (value: {} | undefined): Configuration => {
 const emptyConfig = sanitizeConfig(undefined);
 
 export interface ConfigStorage {
-  load: () => Configuration | undefined;
-  save: (value: Configuration) => void;
+  load: () => Record<string, unknown> | undefined;
+  save: (value: Record<string, unknown>) => void;
 }
 
 export const realConfigStorage: ConfigStorage = {
   load: () => {
     return Store.get('config');
   },
-  save: (config: {}): void => {
+  save: (config: Record<string, unknown>): void => {
     Store.set('config', config);
   },
 };
