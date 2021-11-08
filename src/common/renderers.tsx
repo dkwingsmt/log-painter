@@ -3,7 +3,14 @@ import React from 'react';
 import escapeHtml from 'escape-html';
 import join from 'lodash/join';
 
-export type RendererId = 'standard-rich' | 'standard-bbs' | 'tab-rich';
+export type RendererId =
+    'standard-rich'
+  | 'bold-rich'
+  | 'standard-html'
+  | 'bold-html'
+  | 'standard-bbs'
+  | 'bold-bbs'
+  | 'tab-rich';
 
 export interface RendereeLine {
   content: string[];
@@ -25,44 +32,33 @@ export interface RenderingScheme {
   finalRenderer: RenderHandler;
 }
 
-function standardLineRenderer(line: RendereeLine, key: number): React.ReactNode {
-  return (
-    <p
-      key={key}
-      style={{
-        color: line.playerColor,
-      }}
-    >
-      {`<${line.playerName}> `}
-      {line.content.map((contentLine: string, contentId: number) => {
-        const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>];
-        return newLine.concat([<span key={contentId}>{contentLine}</span>]);
-      })}
-    </p>
-  );
-}
-
-const schemeStandardRich: RenderingScheme = {
-  id: 'standard-rich',
-  name: '标准尖括号（富文本）',
-  description: '最常见的格式。输出富文本，可直接复制粘贴到Word里。预览如下：',
-  allowNewPalette: true,
-  previewRenderer: { line: standardLineRenderer },
-  finalRenderer: { line: standardLineRenderer },
+const standardLineRenderer = (leftDiv: string, rightDiv: string) => {
+  function StandardLine(line: RendereeLine, key: number): React.ReactNode {
+    return (
+      <p
+        key={key}
+        style={{
+          color: line.playerColor,
+        }}
+      >
+        {`${leftDiv}${line.playerName}${rightDiv}`}
+        {line.content.map((contentLine: string, contentId: number) => {
+          const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>];
+          return newLine.concat([<span key={contentId}>{contentLine}</span>]);
+        })}
+      </p>
+    );
+  }
+  return StandardLine;
 };
 
-const schemeStandardBbs: RenderingScheme = {
-  id: 'standard-bbs',
-  name: '标准尖括号（BBS代码）',
-  description: '最常见的格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
-  allowNewPalette: false,
-  previewRenderer: { line: standardLineRenderer },
-  finalRenderer: {
-    line: (line: RendereeLine , key: number) => (
+const bbsFinalLineRenderer = (leftDiv: string, rightDiv: string) => {
+  function BbsFinalLine(line: RendereeLine, key: number): React.ReactNode {
+    return (
       <span
         key={key}
       >
-        {`[color=${line.playerColor}]<${line.playerName}> `}
+        {`[color=${line.playerColor}]${leftDiv}${line.playerName}${rightDiv}`}
         {line.content.map((contentLine: string, contentId: number) => {
           const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>];
           return newLine.concat([<span key={contentId}>{contentLine}</span>]);
@@ -70,13 +66,89 @@ const schemeStandardBbs: RenderingScheme = {
         {`[/color]`}
         <br/>
       </span>
-    ),
-  },
+    );
+  }
+  return BbsFinalLine;
+};
+
+const htmlFinalLineRenderer = (leftDiv: string, rightDiv: string) => {
+  function HtmlFinalLine(line: RendereeLine, key: number): React.ReactNode {
+    return (
+      <span
+        key={key}
+      > {[
+          `<p style="color: ${line.playerColor}">`,
+          escapeHtml(`${leftDiv}${line.playerName}${rightDiv}`),
+          ...line.content.map((contentLine: string, contentId: number) => {
+            const newLine = contentId === 0 ? [] : [<br key={`br-${contentId}`}/>];
+            return newLine.concat([<span key={contentId}>{escapeHtml(contentLine)}</span>]);
+          }),
+          `</p>`,
+        ]}
+        <br/>
+      </span>
+    );
+  }
+  return HtmlFinalLine;
+};
+
+const schemeAngularBracketRich: RenderingScheme = {
+  id: 'standard-rich',
+  name: '富文本，尖括号分割',
+  description: '最常见的格式。输出富文本，可直接复制粘贴到Word里。预览如下：',
+  allowNewPalette: true,
+  previewRenderer: { line: standardLineRenderer('<', '> ') },
+  finalRenderer: { line: standardLineRenderer('<', '> ') },
+};
+
+const schemeBoldBracketRich: RenderingScheme = {
+  id: 'bold-rich',
+  name: '富文本，粗括号分割',
+  description: '常见格式。输出富文本，可直接复制粘贴到Word里。预览如下：',
+  allowNewPalette: true,
+  previewRenderer: { line: standardLineRenderer('【', '】') },
+  finalRenderer: { line: standardLineRenderer('【', '】') },
+};
+
+const schemeAngularBracketBbs: RenderingScheme = {
+  id: 'standard-bbs',
+  name: 'BBS代码，尖括号分割',
+  description: '最常见的格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
+  allowNewPalette: false,
+  previewRenderer: { line: standardLineRenderer('<', '> ') },
+  finalRenderer: { line: bbsFinalLineRenderer('<', '> ') },
+};
+
+const schemeBoldBracketBbs: RenderingScheme = {
+  id: 'bold-bbs',
+  name: 'BBS代码，粗括号分割',
+  description: '常见格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
+  allowNewPalette: false,
+  previewRenderer: { line: standardLineRenderer('【', '】') },
+  finalRenderer: { line: bbsFinalLineRenderer('【', '】') },
+};
+
+const schemeAngularBracketHtml: RenderingScheme = {
+  id: 'standard-html',
+  name: 'HTML，尖括号分割',
+  description: '最常见的格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
+  allowNewPalette: true,
+  previewRenderer: { line: standardLineRenderer('<', '> ') },
+  finalRenderer: { line: htmlFinalLineRenderer('<', '> ') },
+};
+
+const schemeBoldBracketHtml: RenderingScheme = {
+  id: 'bold-html',
+  name: 'HTML，粗括号分割',
+  description: '常见格式。输出BBS代码，可复制粘贴到果园。最终效果预览如下：',
+  allowNewPalette: true,
+  previewRenderer: { line: standardLineRenderer('【', '】') },
+  finalRenderer: { line: htmlFinalLineRenderer('【', '】') },
 };
 
 const schemeTabRich: RenderingScheme = {
   id: 'tab-rich',
-  name: 'Tab分割（富文本）',
+  name: '【特殊】Tab分割',
   description: '以Tab分割各元素，保证垂直对齐的特殊格式。输出富文本，可直接复制粘贴到Word等软件中。大致效果预览如下（最终效果取决于文档设定）：',
   allowNewPalette: true,
   previewRenderer: {
@@ -118,8 +190,12 @@ const schemeTabRich: RenderingScheme = {
 };
 
 export const renderingSchemes: Record<RendererId, RenderingScheme> = {
-  'standard-rich': schemeStandardRich,
-  'standard-bbs': schemeStandardBbs,
+  'standard-rich': schemeAngularBracketRich,
+  'bold-rich': schemeBoldBracketRich,
+  'standard-bbs': schemeAngularBracketBbs,
+  'bold-bbs': schemeBoldBracketBbs,
+  'standard-html': schemeAngularBracketHtml,
+  'bold-html': schemeBoldBracketHtml,
   'tab-rich': schemeTabRich,
 };
 
